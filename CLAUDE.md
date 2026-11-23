@@ -20,12 +20,20 @@ overlays/
   alerts-frame/        Alertas 900x260 (inscrito, superchat, membro, raid)
   lower-third/         Faixa de nome 1100x200
   webcam-bg/           Fundo virtual 1920x1080 (Overlay_WebcamBg) atrás da Webcam_Main
+  reacoes/             Reações com som (gg, clutch, f, pateta, hype, tilt) — evento JS "rodikil-reacao"
   intro/               Intros com som sintetizado (Web Audio): opcao-1-orbita, opcao-2-glitch, opcao-3-contagem
 site/                  Site do canal (usa overlays/shared/theme.css e brand/assets)
 scenes/
   sources.json         Catálogo de INPUTS (globais no OBS): kind, settings, filtros
   base/ lives/ gravacao/   Uma cena por arquivo: itens, transform, enabled, locked, ordem
 obs-config/profile/    Perfil de saída de referência (basic.ini parcial + encoders) — sem segredos
+obs-config/scripts/    rodikil-intro.lua: atalhos globais (abrir live, ir p/ cena direto no ar, mic) — Ferramentas › Scripts
+obs-config/hotkeys.json  Mapa de teclas; scripts/setup_obs_hotkeys.py grava nas configs do script (OBS fechado)
+painel/index.html      Painel de controle (WebSocket v5 puro, doca no OBS); fluxo editável no topo do <script>.
+                       Tem SHA-256 em JS (celular via http:// não tem crypto.subtle).
+scripts/painel_servidor.py  Serve SÓ painel/, overlays/shared/, brand/assets/ na rede (celular). A whitelist é
+                       checada no caminho FINAL (translate_path) — checar a URL crua vazava o .env via %2e%2e.
+                       Intro em uso: overlays/intro/opcao-1-orbita.html (Overlay_Intro, cena Base - Intro)
 scripts/
   setup_machine.ps1    Máquina nova: venv, .env, plugin (versão fixa + SHA-256), perfil — idempotente
   setup_obs_profile.py Mescla obs-config/profile/ no perfil do OBS (OBS fechado; nunca toca service.json)
@@ -43,6 +51,8 @@ assets/overlays, assets/audio   Mídias leves versionáveis (vídeos pesados sã
   `enabled`, `locked`, e opcionalmente `input` (override do catálogo).
 - Inputs são **globais** no OBS: settings e filtros ficam em `scenes/sources.json`. A mesma fonte nunca pode ter
   definições diferentes entre cenas (`apply_scene.py` aborta se isso acontecer).
+- LivePix: `Overlay_LivePixAlerta` / `Overlay_LivePixQR` usam `${LIVEPIX_ALERTA_URL}` / `${LIVEPIX_QRCODE_URL}` do `.env`
+  (links privados — nunca no Git).
 - Placeholders: `${PROJECT_ROOT}` (raiz do repo), `${VAR}` (do `.env`), `"@file:caminho"` (conteúdo do arquivo).
   Se uma variável faltar, a chave não é enviada e o item fica **desativado**.
 - IDs de dispositivo/janela (webcam, mic, monitor) **não** vão para o Git — escolha-os uma vez no OBS.
@@ -85,7 +95,10 @@ Todo script novo que escreva no OBS deve seguir a mesma regra.
   (o mic some do mixer nessas telas — é esperado). Cuidado no Modo Estúdio: a cena no ar é uma cópia feita na
   transição; mudanças só valem para ela na próxima transição. O ID do dispositivo vem de `MIC_DEVICE_ID` no `.env`
   (liste com `test_connection.py --devices`). O Áudio Global de microfone deve ficar **desativado** no OBS, senão duplica.
-- `Desktop_Audio` continua como **Áudio Global** (toca em todas as cenas) e por isso não aparece nos JSONs.
+- `Desktop_Audio` (som do PC: jogo, Discord) também é **fonte de cena**, só em lives, Resenha e gravações. Iniciando
+  (só música `Overlay_Musica`), Intro, Intervalo e Encerrando ficam **sem** som do PC de propósito. Volume no catálogo
+  (`volume_db`, aplicado por `apply_scene.py`). **Nenhum Áudio Global** no OBS: `scripts/setup_obs_global_audio.py`
+  desativa (OBS fechado). Monitoramento desligado (monitorar o desktop capturado gera eco).
 - Cadeia de filtros do `Mic_Main`: Compressor → Filtro de ruídos (gate) → Supressão de ruídos → Ganho → VST (Accusonus ERA6)
   → Limitador. O Git gerencia só **Compressor** e **Limitador** (`scenes/sources.json`); os demais são ajustados no OBS.
   `apply_scene.py` nunca apaga filtros, só cria/atualiza os declarados.

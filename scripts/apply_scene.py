@@ -88,6 +88,7 @@ class Applier:
                 return None
             resp = self.cl.create_input(scene, name, kind, settings, bool(item.get("enabled", True)) and not missing)
             self.inputs[name] = kind
+            self.apply_volume(name, definition)
             self.done_inputs.add(name)
             return resp.scene_item_id
 
@@ -102,6 +103,7 @@ class Applier:
                 self.log(f"  ~ atualizando settings de '{name}'")
                 if not self.dry:
                     self.cl.set_input_settings(name, settings, True)
+            self.apply_volume(name, definition)
             self.done_inputs.add(name)
 
         item_id = self.scene_item_id(scene, name)
@@ -113,6 +115,16 @@ class Applier:
         else:
             self.log(f"  = '{name}' já está na cena (id {item_id})")
         return item_id
+
+    def apply_volume(self, name: str, definition: dict) -> None:
+        """Volume opcional do catálogo ("volume_db"). Só reaplica se mudou (> 0,05 dB)."""
+        if "volume_db" not in definition or self.dry:
+            return
+        want = float(definition["volume_db"])
+        current = self.cl.get_input_volume(name).input_volume_db
+        if abs(current - want) > 0.05:
+            self.log(f"  ~ volume de '{name}': {current:.1f} -> {want:.1f} dB")
+            self.cl.set_input_volume(name, vol_db=want)
 
     def ensure_filters(self, source: str, filters: list[dict]) -> None:
         if not filters:

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel Rodikil</title>
+  <!--
+    Painel de controle da live. Fala direto com o OBS pelo WebSocket v5 (sem bibliotecas externas).
+    Use como doca dentro do OBS: Docas › Docas de navegador personalizadas › URL = file:///<repo>/painel/index.html
+    ou abra no navegador. A senha do WebSocket fica só no localStorage desta máquina (nunca no Git).
+    Atalhos (com o painel em foco): 1–6 cenas · I abrir live (intro) · M microfone.
+  -->
+  <link rel="stylesheet" href="../overlays/shared/theme.css">
+  <style>
+    html, body { overflow-x: hidden; overflow-y: auto; background: var(--rk-black); width: auto; }
+    body { padding: 14px; font-family: var(--rk-font-display); min-width: 280px; }
+    .stats > *, .scenes > *, .controls > * { min-width: 0; }
+    button { font: inherit; cursor: pointer; border: 0; color: inherit; }
+    .hidden { display: none !important; }
+    .sep { color: var(--rk-red); }
+
+    /* Topo: status */
+    .top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .top img { height: 28px; }
+    .badge {
+      margin-left: auto; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px;
+      border-radius: 999px; background: var(--rk-card); border: 1px solid var(--rk-border);
+      font-family: var(--rk-font-mono); font-size: 11px; letter-spacing: .18em; color: var(--rk-dust);
+    }
+    .badge i { width: 8px; height: 8px; border-radius: 50%; background: #3A3A3C; }
+    .badge.live { background: var(--rk-red); border-color: var(--rk-red); color: var(--rk-bone); }
+    .badge.live i { background: var(--rk-bone); animation: rk-pulse 1.4s ease-in-out infinite; }
+    .badge.on i { background: #3FB950; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+    .stat { background: var(--rk-card); border: 1px solid var(--rk-border); border-radius: 8px; padding: 8px 10px; }
+    .stat b { display: block; font-size: 22px; font-weight: 700; line-height: 1.1; }
+    .stat span { font-family: var(--rk-font-mono); font-size: 9px; letter-spacing: .16em; color: var(--rk-dust); text-transform: uppercase; }
+    .stat.bad b { color: var(--rk-red); }
+
+    h2 { font-family: var(--rk-font-mono); font-weight: 400; font-size: 10px; letter-spacing: .24em; color: var(--rk-dust); margin: 16px 0 8px; text-transform: uppercase; }
+
+    /* Botão principal */
+    .open {
+      width: 100%; height: 64px; border-radius: 14px; background: var(--rk-red); color: var(--rk-bone);
+      font-weight: 800; font-size: 26px; letter-spacing: .04em; position: relative; overflow: hidden;
+    }
+    .open small { font-family: var(--rk-font-mono); font-size: 10px; letter-spacing: .2em; font-weight: 400; display: block; opacity: .85; }
+    .open .bar { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--rk-bone); width: 0; }
+    .open:disabled { filter: grayscale(.4) brightness(.8); cursor: default; }
+
+    /* Cenas */
+    .scenes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .scene {
+      height: 74px; border-radius: 12px; background: var(--rk-card); border: 2px solid var(--rk-border);
+      text-align: left; padding: 0 14px; display: flex; flex-direction: column; justify-content: center; position: relative;
+      transition: border-color .15s, background .15s;
+    }
+    .scene:hover { border-color: #4A4A4E; }
+    .scene b { font-size: 22px; font-weight: 800; line-height: 1; }
+    .scene span { font-family: var(--rk-font-mono); font-size: 9px; letter-spacing: .18em; color: var(--rk-dust); margin-top: 4px; }
+    /* atalho global, discreto, embaixo de cada nome */
+    .hk { display: block; font-style: normal; font-family: var(--rk-font-mono); font-weight: 400; font-size: 9px; letter-spacing: .16em; color: #66666C; margin-top: 4px; text-transform: uppercase; }
+    .scene.program .hk { color: #A8A8AE; }
+    .scene.program { border-color: var(--rk-red); background: rgba(250, 43, 40, .14); }
+    .scene.program span { color: var(--rk-red); }
+    .scene.preview { border-style: dashed; border-color: #6A6A70; }
+    .scene .mic { position: absolute; right: 10px; bottom: 8px; width: 7px; height: 12px; border-radius: 50%; background: var(--rk-red); opacity: .8; }
+
+    /* Controles */
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ctl {
+      height: 60px; border-radius: 12px; background: var(--rk-card); border: 2px solid var(--rk-border);
+      font-weight: 800; font-size: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+    }
+    .ctl-main { display: inline-flex; align-items: center; gap: 10px; }
+    .ctl i { width: 10px; height: 10px; border-radius: 50%; background: #3FB950; }
+    .ctl.muted { border-color: var(--rk-red); color: var(--rk-red); }
+    .ctl.muted i { background: var(--rk-red); }
+    .ctl.absent { opacity: .45; }
+    .ctl.stream.live { background: transparent; border-color: var(--rk-red); color: var(--rk-red); }
+    .ctl.confirm { background: var(--rk-red); border-color: var(--rk-red); color: var(--rk-bone); }
+
+    .reacts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .react { height: 56px; border-radius: 12px; background: var(--rk-card); border: 2px solid var(--rk-border); font-weight: 800; font-size: 17px; letter-spacing: .04em; line-height: 1; }
+    .react .hk { margin-top: 5px; letter-spacing: .1em; }
+    .react:active .hk { color: var(--rk-bone); }
+    .react:hover { border-color: var(--rk-red); }
+    .react:active { background: var(--rk-red); color: var(--rk-bone); }
+    .others { display: flex; flex-wrap: wrap; gap: 6px; }
+    .others button { height: 32px; padding: 0 12px; border-radius: 999px; background: var(--rk-card); border: 1px solid var(--rk-border); font-family: var(--rk-font-mono); font-size: 10px; letter-spacing: .12em; color: var(--rk-dust); }
+    .others button.program { border-color: var(--rk-red); color: var(--rk-bone); }
+
+    .hint { font-family: var(--rk-font-mono); font-size: 10px; letter-spacing: .1em; color: #55555B; margin-top: 14px; line-height: 1.7; }
+    .toast { position: fixed; left: 14px; right: 14px; bottom: 14px; padding: 12px 14px; border-radius: 10px; background: var(--rk-card); border: 1px solid var(--rk-red); font-family: var(--rk-font-mono); font-size: 11px; }
+
+    /* Conexão */
+    .connect { max-width: 380px; margin: 40px auto; }
+    .connect h1 { font-size: 44px; margin-bottom: 8px; }
+    .connect p { font-family: var(--rk-font-mono); font-size: 12px; line-height: 1.7; color: var(--rk-dust); }
+    .connect label { display: block; font-family: var(--rk-font-mono); font-size: 10px; letter-spacing: .2em; color: var(--rk-dust); margin: 14px 0 6px; }
+    .connect input { width: 100%; height: 44px; border-radius: 10px; border: 1px solid var(--rk-border); background: var(--rk-card); color: var(--rk-bone); padding: 0 12px; font-family: var(--rk-font-mono); font-size: 14px; }
+    .connect .row { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; }
+    .connect .open { margin-top: 20px; height: 54px; font-size: 22px; }
+    .err { color: var(--rk-red) !important; }
+  </style>
+</head>
+<body>
+  <!-- Tela de conexão -->
+  <section class="connect hidden" id="connect">
+    <h1 class="rk-headline">PAINEL <span class="rk-accent">RODIKIL</span></h1>
+    <p>Conecte ao OBS uma vez. A senha fica salva só neste computador.<br>OBS › Ferramentas › Configurações do servidor WebSocket.</p>
+    <div class="row">
+      <div><label>HOST (IP DO PC)</label><input id="f-host" value="localhost"></div>
+      <div><label>PORTA</label><input id="f-port" value="4455"></div>
+    </div>
+    <label>SENHA</label><input id="f-pass" type="password" autocomplete="off">
+    <p class="err" id="f-err"></p>
+    <button class="open" id="f-go">CONECTAR</button>
+  </section>
+
+  <!-- Painel -->
+  <main id="panel" class="hidden">
+    <div class="top">
+      <img src="../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+      <span class="badge" id="badge"><i></i><span id="badge-txt">CONECTANDO</span></span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b id="s-time">--:--</b><span>Tempo</span></div>
+      <div class="stat"><b id="s-kbps">—</b><span>Kbps</span></div>
+      <div class="stat" id="s-drop-box"><b id="s-drop">0</b><span>Perdidos</span></div>
+      <div class="stat"><b id="s-cpu">—</b><span>CPU OBS</span></div>
+    </div>
+
+    <button class="open" id="btn-open"><span>▶ ABRIR LIVE</span><small>INTRO <span class="sep">//</span> DEPOIS RESENHA <span class="sep">·</span> CTRL+ALT+0</small><span class="bar" id="open-bar"></span></button>
+
+    <h2>Cenas <span class="sep">//</span> clique = vai pro ar</h2>
+    <div class="scenes" id="scenes"></div>
+
+    <h2>Controles</h2>
+    <div class="controls">
+      <button class="ctl" id="btn-mic"><span class="ctl-main"><i></i><span id="mic-txt">MIC</span></span><em class="hk">CTRL+ALT+M</em></button>
+      <button class="ctl stream" id="btn-stream"><span id="stream-txt">INICIAR LIVE</span></button>
+    </div>
+
+    <h2>Reações <span class="sep">//</span> com som</h2>
+    <div class="reacts" id="reacts"></div>
+
+    <h2>Outras cenas</h2>
+    <div class="others" id="others"></div>
+
+    <p class="hint">ATALHOS EMBAIXO DE CADA BOTÃO FUNCIONAM COM O JOGO EM FOCO<br>
+      <a href="#" id="btn-logout" style="color:inherit">TROCAR CONEXÃO</a></p>
+  </main>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script>
+  /* ===== Configuração do fluxo (edite aqui) ===== */
+  const SCENES = [
+    { name: "Base - Iniciando",  label: "INICIANDO",  sub: "ABERTURA + MÚSICA", key: "1" },
+    { name: "Base - Resenha",    label: "RESENHA",    sub: "PAPO + CHAT",       key: "2", mic: true },
+    { name: "Live - Dota 2",     label: "DOTA 2",     sub: "JOGO",              key: "3", mic: true },
+    { name: "Live - CS2",        label: "CS2",        sub: "JOGO",              key: "4", mic: true },
+    { name: "Base - Intervalo",  label: "INTERVALO",  sub: "JÁ VOLTO",          key: "5" },
+    { name: "Base - Encerrando", label: "ENCERRANDO", sub: "FIM DA LIVE",       key: "6" }
+  ];
+  const INTRO = { scene: "Base - Intro", next: "Base - Resenha", ms: 7200 };
+  const MIC = "Mic_Main";
+  const REACOES = [
+    { tipo: "gg", label: "GG", key: "F1" }, { tipo: "clutch", label: "CLUTCH", key: "F2" }, { tipo: "f", label: "F", key: "F3" },
+    { tipo: "pateta", label: "PATETA", key: "F4" }, { tipo: "hype", label: "HYPE", key: "F5" }, { tipo: "tilt", label: "TILTOU", key: "F6" }
+  ];
+  /* ============================================= */
+
+  const $ = (id) => document.getElementById(id);
+  const state = { program: "", preview: "", studio: false, live: false, sceneNames: [] };
+  let ws = null, reqId = 0;
+  const pending = new Map();
+
+  function toast(msg, ms) {
+    const t = $("toast"); t.textContent = msg; t.classList.remove("hidden");
+    clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.add("hidden"), ms || 3500);
+  }
+
+  /* SHA-256 próprio: no celular (http:// na rede local) o navegador bloqueia crypto.subtle */
+  const SHA = (() => {
+    const K = [], H = [], frac = (x) => ((x - Math.floor(x)) * 0x100000000) >>> 0;
+    for (let n = 2, c = 0; c < 64; n++) {
+      let prime = true; for (let d = 2; d * d <= n; d++) if (n % d === 0) { prime = false; break; }
+      if (prime) { if (c < 8) H[c] = frac(Math.pow(n, 1 / 2)); K[c] = frac(Math.pow(n, 1 / 3)); c++; }
+    }
+    const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+    return (bytes) => {
+      const l = bytes.length, padded = new Uint8Array(((l + 9 + 63) >> 6) << 6);
+      padded.set(bytes); padded[l] = 0x80;
+      const dv = new DataView(padded.buffer);
+      dv.setUint32(padded.length - 4, (l * 8) >>> 0); dv.setUint32(padded.length - 8, Math.floor(l / 0x20000000));
+      const h = H.slice(), w = new Uint32Array(64);
+      for (let i = 0; i < padded.length; i += 64) {
+        for (let t = 0; t < 16; t++) w[t] = dv.getUint32(i + t * 4);
+        for (let t = 16; t < 64; t++) {
+          const a = w[t - 15], b = w[t - 2];
+          w[t] = (w[t - 16] + (rotr(a, 7) ^ rotr(a, 18) ^ (a >>> 3)) + w[t - 7] + (rotr(b, 17) ^ rotr(b, 19) ^ (b >>> 10))) >>> 0;
+        }
+        let [A, B, C, D, E, F, G, X] = h;
+        for (let t = 0; t < 64; t++) {
+          const t1 = (X + (rotr(E, 6) ^ rotr(E, 11) ^ rotr(E, 25)) + ((E & F) ^ (~E & G)) + K[t] + w[t]) >>> 0;
+          const t2 = ((rotr(A, 2) ^ rotr(A, 13) ^ rotr(A, 22)) + ((A & B) ^ (A & C) ^ (B & C))) >>> 0;
+          X = G; G = F; F = E; E = (D + t1) >>> 0; D = C; C = B; B = A; A = (t1 + t2) >>> 0;
+        }
+        [A, B, C, D, E, F, G, X].forEach((v, k) => { h[k] = (h[k] + v) >>> 0; });
+      }
+      const out = new Uint8Array(32), odv = new DataView(out.buffer);
+      h.forEach((v, k) => odv.setUint32(k * 4, v));
+      return out;
+    };
+  })();
+  async function sha256b64(text) {
+    const data = new TextEncoder().encode(text);
+    const buf = (window.crypto && crypto.subtle) ? new Uint8Array(await crypto.subtle.digest("SHA-256", data)) : SHA(data);
+    return btoa(String.fromCharCode(...buf));
+  }
+
+  /* ---------- WebSocket v5 (protocolo do obs-websocket) ---------- */
+  function connect(cfg) {
+    return new Promise((resolve, reject) => {
+      try { ws && ws.close(); } catch (e) {}
+      ws = new WebSocket(`ws://${cfg.host}:${cfg.port}`);
+      let identified = false;
+      ws.onerror = () => reject(new Error("Não conectou. O OBS está aberto e o WebSocket ativado?"));
+      ws.onclose = (ev) => {
+        if (!identified) return reject(new Error(ev.code === 4009 ? "Senha incorreta." : "Conexão recusada pelo OBS."));
+        setBadge("off", "DESCONECTADO"); toast("Conexão com o OBS caiu — tentando de novo…");
+        setTimeout(() => start(), 3000);
+      };
+      ws.onmessage = async (ev) => {
+        const msg = JSON.parse(ev.data);
+        if (msg.op === 0) { // Hello
+          const ident = { rpcVersion: 1, eventSubscriptions: 0x7FF };
+          if (msg.d.authentication) {
+            const { salt, challenge } = msg.d.authentication;
+            ident.authentication = await sha256b64((await sha256b64(cfg.pass + salt)) + challenge);
+          }
+          ws.send(JSON.stringify({ op: 1, d: ident }));
+        } else if (msg.op === 2) { identified = true; resolve(); }
+        else if (msg.op === 7) {
+          const p = pending.get(msg.d.requestId); if (!p) return; pending.delete(msg.d.requestId);
+          msg.d.requestStatus.result ? p.res(msg.d.responseData || {}) : p.rej(new Error(msg.d.requestStatus.comment || ("erro " + msg.d.requestStatus.code)));
+        } else if (msg.op === 5) onEvent(msg.d.eventType, msg.d.eventData || {});
+      };
+    });
+  }
+  function call(requestType, requestData) {
+    return new Promise((res, rej) => {
+      const requestId = "r" + (++reqId);
+      pending.set(requestId, { res, rej });
+      ws.send(JSON.stringify({ op: 6, d: { requestType, requestId, requestData: requestData || {} } }));
+    });
+  }
+
+  /* ---------- Interface ---------- */
+  function setBadge(cls, txt) { const b = $("badge"); b.className = "badge " + cls; $("badge-txt").textContent = txt; }
+
+  function renderScenes() {
+    const box = $("scenes"); box.innerHTML = "";
+    SCENES.forEach((s) => {
+      const b = document.createElement("button");
+      const exists = state.sceneNames.includes(s.name);
+      b.className = "scene" + (state.program === s.name ? " program" : "") + (state.studio && state.preview === s.name && state.program !== s.name ? " preview" : "");
+      b.innerHTML = `<b>${s.label}</b><span>${state.program === s.name ? "NO AR" : s.sub}</span><em class="hk">CTRL+ALT+${s.key}</em>` + (s.mic ? '<i class="mic" title="Microfone aberto nesta cena"></i>' : "");
+      if (!exists) { b.disabled = true; b.style.opacity = .35; b.title = "Cena não existe no OBS"; }
+      b.onclick = () => goScene(s.name);
+      box.appendChild(b);
+    });
+    const known = new Set(SCENES.map((s) => s.name).concat([INTRO.scene]));
+    const others = $("others"); others.innerHTML = "";
+    state.sceneNames.filter((n) => !known.has(n)).forEach((n) => {
+      const b = document.createElement("button"); b.textContent = n.toUpperCase();
+      if (state.program === n) b.className = "program";
+      b.onclick = () => goScene(n); others.appendChild(b);
+    });
+    others.previousElementSibling.classList.toggle("hidden", !others.children.length);
+  }
+
+  async function goScene(name) {
+    try { await call("SetCurrentProgramScene", { sceneName: name }); }
+    catch (e) { toast("Não troquei a cena: " + e.message); }
+  }
+
+  function renderOpen() {
+    const onAir = state.program === INTRO.scene;
+    $("btn-open").querySelector("small").innerHTML = onAir ? "INTRO NO AR" : 'INTRO <span class="sep">//</span> DEPOIS RESENHA <span class="sep">·</span> CTRL+ALT+0';
+  }
+
+  let introTimer = null;
+  async function openLive() {
+    if (introTimer) return;
+    const btn = $("btn-open"), bar = $("open-bar");
+    if (!state.sceneNames.includes(INTRO.scene)) return toast(`Cena "${INTRO.scene}" não existe — rode apply_scene.py scenes/base/intro.json`);
+    btn.disabled = true;
+    await goScene(INTRO.scene);
+    const t0 = performance.now();
+    (function tick() {
+      const p = Math.min(1, (performance.now() - t0) / INTRO.ms);
+      bar.style.width = (p * 100) + "%";
+      if (p < 1) introTimer = requestAnimationFrame(tick);
+      else { introTimer = null; bar.style.width = 0; btn.disabled = false; goScene(INTRO.next); }
+    })();
+  }
+
+  async function refreshMic() {
+    const btn = $("btn-mic");
+    try {
+      const { inputMuted } = await call("GetInputMute", { inputName: MIC });
+      setMic(inputMuted);
+    } catch (e) { btn.className = "ctl absent"; $("mic-txt").textContent = "SEM MIC"; }
+  }
+  function setMic(muted) {
+    $("btn-mic").className = "ctl" + (muted ? " muted" : "");
+    $("mic-txt").textContent = muted ? "MIC MUTADO" : "MIC ABERTO";
+  }
+
+  let confirmStream = null;
+  async function toggleStream() {
+    const btn = $("btn-stream");
+    if (!confirmStream) {
+      btn.classList.add("confirm");
+      $("stream-txt").textContent = state.live ? "CONFIRMAR: ENCERRAR" : "CONFIRMAR: INICIAR";
+      confirmStream = setTimeout(() => { confirmStream = null; renderStream(); }, 3000);
+      return;
+    }
+    clearTimeout(confirmStream); confirmStream = null;
+    try { await call(state.live ? "StopStream" : "StartStream"); }
+    catch (e) { toast("O OBS recusou: " + e.message); }
+    renderStream();
+  }
+  function renderStream() {
+    const btn = $("btn-stream"); btn.className = "ctl stream" + (state.live ? " live" : "");
+    $("stream-txt").textContent = state.live ? "■ ENCERRAR LIVE" : "● INICIAR LIVE";
+  }
+
+  /* ---------- Eventos do OBS ---------- */
+  function onEvent(type, d) {
+    if (type === "CurrentProgramSceneChanged") { state.program = d.sceneName; renderScenes(); renderOpen(); }
+    else if (type === "CurrentPreviewSceneChanged") { state.preview = d.sceneName; renderScenes(); }
+    else if (type === "StudioModeStateChanged") { state.studio = d.studioModeEnabled; renderScenes(); }
+    else if (type === "SceneListChanged" || type === "SceneCreated" || type === "SceneRemoved" || type === "SceneNameChanged") loadScenes();
+    else if (type === "InputMuteStateChanged" && d.inputName === MIC) setMic(d.inputMuted);
+    else if (type === "StreamStateChanged") { state.live = d.outputActive; renderStream(); }
+  }
+
+  async function loadScenes() {
+    const r = await call("GetSceneList");
+    state.sceneNames = r.scenes.map((s) => s.sceneName).reverse();
+    state.program = r.currentProgramSceneName; state.preview = r.currentPreviewSceneName || "";
+    renderScenes(); renderOpen();
+  }
+
+  let lastBytes = null, lastT = null;
+  async function poll() {
+    try {
+      const st = await call("GetStreamStatus");
+      const stats = await call("GetStats");
+      state.live = st.outputActive;
+      if (st.outputActive) {
+        setBadge("live", "AO VIVO");
+        $("s-time").textContent = (st.outputTimecode || "").slice(0, 8).replace(/^00:/, "");
+        const now = performance.now();
+        if (lastBytes !== null && st.outputBytes >= lastBytes) $("s-kbps").textContent = Math.round(((st.outputBytes - lastBytes) * 8) / (now - lastT));
+        lastBytes = st.outputBytes; lastT = now;
+        $("s-drop").textContent = st.outputSkippedFrames;
+        $("s-drop-box").classList.toggle("bad", st.outputSkippedFrames > 0);
+      } else {
+        setBadge("on", "CONECTADO // OFFLINE");
+        $("s-time").textContent = "--:--"; $("s-kbps").textContent = "—"; lastBytes = null;
+        if (poll.base === undefined) poll.base = stats.renderSkippedFrames;
+        const lost = stats.renderSkippedFrames - poll.base; // fora do ar: perdidos na renderização desde que o painel abriu
+        $("s-drop").textContent = lost;
+        $("s-drop-box").classList.toggle("bad", lost > 0);
+      }
+      $("s-cpu").textContent = Math.round(stats.cpuUsage) + "%";
+      if (!confirmStream) renderStream();
+    } catch (e) {}
+  }
+
+  /* ---------- Início ---------- */
+  function loadCfg() { try { return JSON.parse(localStorage.getItem("rk-obs") || "null"); } catch (e) { return null; } }
+  async function start() {
+    const cfg = loadCfg();
+    if (!cfg) { $("connect").classList.remove("hidden"); $("panel").classList.add("hidden"); return; }
+    try {
+      await connect(cfg);
+      $("connect").classList.add("hidden"); $("panel").classList.remove("hidden");
+      state.studio = (await call("GetStudioModeEnabled")).studioModeEnabled;
+      await loadScenes(); await refreshMic(); await poll();
+      clearInterval(start._poll); start._poll = setInterval(poll, 2000);
+    } catch (e) {
+      $("connect").classList.remove("hidden"); $("panel").classList.add("hidden");
+      $("f-err").textContent = e.message;
+      $("f-host").value = cfg.host; $("f-port").value = cfg.port;
+    }
+  }
+
+  $("f-go").onclick = () => {
+    localStorage.setItem("rk-obs", JSON.stringify({ host: $("f-host").value.trim(), port: $("f-port").value.trim(), pass: $("f-pass").value }));
+    $("f-err").textContent = ""; start();
+  };
+  $("btn-logout").onclick = (e) => { e.preventDefault(); localStorage.removeItem("rk-obs"); try { ws.close(); } catch (x) {} location.reload(); };
+  REACOES.forEach((r) => {
+    const b = document.createElement("button"); b.className = "react"; b.innerHTML = `${r.label}<em class="hk">CTRL+ALT+${r.key}</em>`;
+    b.title = "Atalho global: Ctrl+Alt+" + r.key;
+    b.onclick = () => call("CallVendorRequest", { vendorName: "obs-browser", requestType: "emit_event",
+      requestData: { event_name: "rodikil-reacao", event_data: { tipo: r.tipo } } }).catch((e) => toast("Reação falhou: " + e.message));
+    $("reacts").appendChild(b);
+  });
+  (() => {
+    const b = document.createElement("button"); b.className = "react"; b.innerHTML = 'QR PIX<em class="hk">CTRL+ALT+P</em>';
+    b.title = "Mostra o cartão do Pix agora nas cenas de jogo (atalho global: Ctrl+Alt+P)";
+    b.onclick = () => call("CallVendorRequest", { vendorName: "obs-browser", requestType: "emit_event",
+      requestData: { event_name: "rodikil-pix", event_data: {} } }).catch((e) => toast("Pix falhou: " + e.message));
+    $("reacts").appendChild(b);
+  })();
+  $("btn-open").onclick = openLive;
+  $("btn-mic").onclick = () => call("ToggleInputMute", { inputName: MIC }).catch(() => toast("Mic_Main não encontrado"));
+  $("btn-stream").onclick = toggleStream;
+  document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "INPUT") return;
+    const s = SCENES.find((x) => x.key === e.key); if (s) return goScene(s.name);
+    if (e.key === "i" || e.key === "I") openLive();
+    if (e.key === "m" || e.key === "M") $("btn-mic").click();
+  });
+  // Aberto pelo celular (http://IP-do-PC:8787): o OBS está no mesmo IP
+  if (location.protocol.startsWith("http") && location.hostname) $("f-host").value = location.hostname;
+  start();
+  </script>
+</body>
+</html>

@@ -99,7 +99,11 @@
     },
     "Desktop_Audio": {
       "kind": "wasapi_output_capture",
-      "settings": {}
+      "$comment": "Som do PC (jogo, Discord dos amigos). FONTE DE CENA só em lives, Resenha e gravações — Iniciando, Intro, Intervalo e Encerrando ficam sem som do PC de propósito. O Áudio Global do desktop deve ficar DESATIVADO no OBS.",
+      "volume_db": -9.7,
+      "settings": {
+        "device_id": "default"
+      }
     },
     "Overlay_Iniciando": {
       "kind": "browser_source",
@@ -147,6 +151,32 @@
         "restart_when_active": false,
         "shutdown": false,
         "reroute_audio": false
+      }
+    },
+    "Overlay_Intro": {
+      "kind": "browser_source",
+      "$comment": "Intro escolhida: 1 // Órbita (7 s, termina em preto). Reinicia a cada vez que a cena entra no ar; o som sai pelo mixer do OBS (reroute_audio).",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/intro/opcao-1-orbita.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": true,
+        "shutdown": true,
+        "reroute_audio": true
+      }
+    },
+    "Overlay_Reacoes": {
+      "kind": "browser_source",
+      "$comment": "Reações com som (gg, clutch, f, pateta, hype, tilt) no topo das cenas de live. Disparo: atalhos Ctrl+Alt+F1..F6 (script Rodikil) ou botões do Painel.",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/reacoes/index.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": true
       }
     },
     "Overlay_CameraFrame": {
@@ -271,6 +301,45 @@
           }
         }
       ]
+    },
+    "Overlay_LivePixAlerta": {
+      "kind": "browser_source",
+      "$comment": "Widget de ALERTA do LivePix (doações via Pix). URL vem do painel do LivePix e fica no .env (LIVEPIX_ALERTA_URL) — não versionar. Sem a variável, o item fica desativado. Som do alerta passa pelo mixer.",
+      "settings": {
+        "is_local_file": false,
+        "url": "${LIVEPIX_ALERTA_URL}",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": true
+      }
+    },
+    "Overlay_PixCard": {
+      "kind": "browser_source",
+      "$comment": "Cartão Rodikil 'MANDA UM PIX' com o QR do LivePix dentro, sempre visível (Iniciando/Intervalo). Modo URL para passar parâmetros; o link do widget vem do .env.",
+      "settings": {
+        "is_local_file": false,
+        "width": 320,
+        "height": 460,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false,
+        "url": "file:///${PROJECT_ROOT}/overlays/livepix/qr-card.html?modo=fixo&src=${LIVEPIX_QRCODE_URL}"
+      }
+    },
+    "Overlay_PixCardJogo": {
+      "kind": "browser_source",
+      "$comment": "Mesmo cartão, em ciclo nas cenas de jogo: aparece a cada 10 min por 25 s (1ª vez após 2 min). Ajuste a/d/p na URL.",
+      "settings": {
+        "is_local_file": false,
+        "width": 320,
+        "height": 460,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false,
+        "url": "file:///${PROJECT_ROOT}/overlays/livepix/qr-card.html?modo=ciclo&a=10&d=25&p=2&src=${LIVEPIX_QRCODE_URL}"
+      }
     }
   }
 }

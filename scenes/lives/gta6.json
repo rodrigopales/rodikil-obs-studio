@@ -132,7 +132,43 @@
       }
     },
     {
+      "source": "Overlay_PixCardJogo",
+      "locked": true,
+      "transform": {
+        "positionX": 1672,
+        "positionY": 330,
+        "alignment": 5,
+        "scaleX": 0.72,
+        "scaleY": 0.72
+      }
+    },
+    {
+      "source": "Overlay_LivePixAlerta",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
+      "source": "Overlay_Reacoes",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
       "source": "Mic_Main"
+    },
+    {
+      "source": "Desktop_Audio"
     }
   ]
 }

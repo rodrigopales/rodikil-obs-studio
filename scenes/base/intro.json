@@ -1,0 +1,21 @@
+{
+  "scene": "Base - Intro",
+  "description": "Intro 1 // Órbita (7 s). Entra depois do Iniciando e passa sozinha para a Resenha pelo botão ABRIR LIVE do painel (painel/index.html) ou pelo atalho do script obs-config/scripts/rodikil-intro.lua. Sem microfone.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "items": [
+    {
+      "source": "Overlay_Intro",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    }
+  ]
+}

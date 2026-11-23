@@ -9,7 +9,7 @@
 param(
     [switch]$SkipPlugin,
     [switch]$SkipProfile,
-    [string]$ObsProfile = "Sem nome"
+    [string]$ObsProfile = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -71,12 +71,25 @@ else {
 }
 
 # 4) Perfil de saída do OBS --------------------------------------------------
-Step "Perfil do OBS ('$ObsProfile'): 1080p60, NVENC CBR 9000, AAC 160"
+Step "Perfil do OBS (ativo, ou -ObsProfile): 1080p60, NVENC CBR 9000, AAC 160"
 if ($SkipProfile) { Warn "pulado (-SkipProfile)" }
 elseif (Get-Process obs64 -ErrorAction SilentlyContinue) { Warn "o OBS está aberto — feche-o e rode: .venv\Scripts\python scripts\setup_obs_profile.py" }
 else {
-    & .venv\Scripts\python.exe scripts\setup_obs_profile.py --profile $ObsProfile
+    if ($ObsProfile) { & .venv\Scripts\python.exe scripts\setup_obs_profile.py --profile $ObsProfile } else { & .venv\Scripts\python.exe scripts\setup_obs_profile.py }
     if ($LASTEXITCODE -ne 0) { Warn "perfil não aplicado — abra o OBS uma vez (para ele criar o perfil), feche e rode de novo" }
+}
+
+# 5) Áudio Global desativado (desktop e mic são fontes de cena) ---------------
+Step "Áudio Global desativado (som do PC e mic só nas cenas que falam/jogam)"
+if (Get-Process obs64 -ErrorAction SilentlyContinue) { Warn "o OBS está aberto — feche-o e rode: .venv\Scripts\python scripts\setup_obs_global_audio.py" }
+else { & .venv\Scripts\python.exe scripts\setup_obs_global_audio.py }
+
+# 6) Atalhos globais (script Rodikil) -----------------------------------------
+Step "Atalhos globais (obs-config/hotkeys.json): Ctrl+Alt+1..6 cenas, Ctrl+Alt+I intro, Ctrl+Alt+M mic"
+if (Get-Process obs64 -ErrorAction SilentlyContinue) { Warn "o OBS está aberto — feche-o e rode: .venv\Scripts\python scripts\setup_obs_hotkeys.py" }
+else {
+    & .venv\Scripts\python.exe scripts\setup_obs_hotkeys.py
+    if ($LASTEXITCODE -ne 0) { Warn "atalhos não aplicados — abra o OBS uma vez (para criar a coleção de cenas), feche e rode de novo" }
 }
 
 Step "Pronto. Próximos passos (README > 'Máquina nova'):"

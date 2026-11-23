@@ -123,13 +123,21 @@ def resolve_settings(settings: dict) -> tuple[dict, list[str]]:
     return out, missing
 
 
+# Valores do .env que NUNCA podem ir para o Git: ao exportar, voltam a ser ${VAR}.
+SECRET_ENV_VARS = ("LIVEPIX_ALERTA_URL", "LIVEPIX_QRCODE_URL", "YOUTUBE_CHAT_URL", "MIC_DEVICE_ID", "OBS_PASSWORD")
+
+
 def unresolve_value(value: Any) -> Any:
-    """Inverso parcial: troca o caminho absoluto do projeto por ${PROJECT_ROOT} (para exportar)."""
+    """Inverso parcial (para exportar): caminho do projeto -> ${PROJECT_ROOT}; valores secretos do .env -> ${VAR}."""
     if isinstance(value, dict):
         return {k: unresolve_value(v) for k, v in value.items()}
     if isinstance(value, list):
         return [unresolve_value(v) for v in value]
     if isinstance(value, str):
+        for var in SECRET_ENV_VARS:
+            secret = os.getenv(var)
+            if secret and len(secret) >= 8 and secret in value:
+                value = value.replace(secret, "${" + var + "}")
         root = project_root_posix()
         norm = value.replace("\\", "/")
         idx = norm.lower().find(root.lower())  # Windows: caminhos não diferenciam maiúsculas

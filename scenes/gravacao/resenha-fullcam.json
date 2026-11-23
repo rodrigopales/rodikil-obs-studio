@@ -51,6 +51,9 @@
     },
     {
       "source": "Mic_Main"
+    },
+    {
+      "source": "Desktop_Audio"
     }
   ]
 }

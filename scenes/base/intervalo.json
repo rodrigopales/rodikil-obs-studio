@@ -14,6 +14,17 @@
         "positionY": 0,
         "alignment": 5
       }
+    },
+    {
+      "source": "Overlay_PixCard",
+      "locked": true,
+      "transform": {
+        "positionX": 1560,
+        "positionY": 560,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
     }
   ]
 }

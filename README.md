@@ -39,8 +39,54 @@ cd rodikil-obs-studio
 6. **No OBS, uma vez por máquina** (não dá para versionar):
    - `Webcam_Main` → *Propriedades* → escolha a webcam.
    - *Configurações › Transmissão* → conecte a conta do YouTube.
-   - *Configurações › Áudio* → Áudio do desktop = *Padrão*; **microfone do Áudio Global desativado** (o `Mic_Main` já está nas cenas).
-   - Opcional: renomeie o "Áudio do desktop" para `Desktop_Audio`.
+   - Áudio: o setup já desativa o Áudio Global (desktop e mic são fontes de cena). Confira em *Configurações › Áudio*.
+
+## Roteiro da live
+
+| Momento | Cena | Como |
+|---|---|---|
+| 10–15 min antes | **Iniciando** (música, sem mic) | Painel › INICIANDO, depois ● INICIAR LIVE (confirma em 2 cliques) |
+| Hora de começar | **Intro** (7 s) → **Resenha** | Painel › **▶ ABRIR LIVE** (ou o atalho global do script) |
+| Achou partida | **Dota 2** / **CS2** (mic aberto) | Painel › tecla 3 / 4 |
+| Pausa | **Intervalo** (sem mic) | Painel › 5 |
+| Fim | **Encerrando** → ■ ENCERRAR LIVE | Painel › 6, depois encerrar (2 cliques) |
+
+### Painel Rodikil (controle visual)
+`painel/index.html` — botões grandes para as cenas, ABRIR LIVE, mic e iniciar/encerrar, com tempo, kbps, frames
+perdidos e CPU. Dentro do OBS: *Docas › Docas de navegador personalizadas* → nome `Painel Rodikil`, URL
+`file:///C:/caminho/do/repo/painel/index.html` → na 1ª vez digite a senha do WebSocket (fica só nesta máquina).
+Atalhos com o painel em foco: `1–6` cenas · `I` abrir live · `M` mic.
+
+### Painel no celular (Stream Deck)
+```powershell
+.venv\Scripts\python scripts\painel_servidor.py
+```
+Abra no celular (mesmo Wi-Fi) o endereço que aparecer (`http://IP-DO-PC:8787/painel/index.html`), digite a senha do
+WebSocket uma vez e use *Adicionar à tela inicial*. O servidor só entrega o painel — nunca o `.env` nem o resto do repo.
+
+### Atalhos globais (funcionam com o jogo em foco)
+Todos vêm do script `obs-config/scripts/rodikil-intro.lua` e levam a cena **direto para o ar**, mesmo no Modo
+Estúdio (os atalhos nativos de cena do OBS só mudam a Prévia). Com o OBS **fechado**:
+`.venv\Scripts\python scripts\setup_obs_hotkeys.py` — grava o mapa de `obs-config/hotkeys.json` (o `setup_machine.ps1` já faz isso).
+
+| Tecla | Ação |
+|---|---|
+| `Ctrl+Alt+1` … `6` | Iniciando, Resenha, Dota 2, CS2, Intervalo, Encerrando |
+| `Ctrl+Alt+0` ou `Ctrl+Alt+I` | Abrir live (intro → Resenha) |
+| `Ctrl+Alt+M` | Microfone liga/desliga |
+| `Ctrl+Alt+F1` … `F6` | Reações: GG, CLUTCH, F, PATETA, HYPE, TILTOU |
+| `Ctrl+Alt+P` | Mostrar o cartão do Pix agora (cenas de jogo) |
+
+### Reações com som
+`overlays/reacoes/index.html` (fonte `Overlay_Reacoes`, no topo das cenas de live). Dispare pelos atalhos acima
+ou pela seção **REAÇÕES** do Painel. Para ver/ouvir no navegador, abra o arquivo e clique nos botões do rodapé.
+
+### LivePix
+No painel do LivePix copie os links dos widgets de **alerta** e de **QR Code** e cole no `.env`:
+`LIVEPIX_ALERTA_URL=` e `LIVEPIX_QRCODE_URL=`. Depois aplique as cenas. Sem os links, os itens ficam desativados.
+O alerta aparece nas cenas de live e na Resenha. O QR Code entra num cartão Rodikil "MANDA UM PIX //"
+(`overlays/livepix/qr-card.html`): fixo no Iniciando e no Intervalo (`Overlay_PixCard`) e, nas cenas de jogo,
+aparecendo a cada 10 min por 25 s (`Overlay_PixCardJogo` — ajuste `a`, `d`, `p` na URL em `scenes/sources.json`).
 
 ## Dia a dia
 

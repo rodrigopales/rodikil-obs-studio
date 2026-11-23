@@ -208,6 +208,87 @@
         api.kick(t, peak);
       },
 
+      /** Fanfarra de vitória: arpejo maior subindo + acorde final. */
+      fanfare(t, peak) {
+        peak = peak || 0.16;
+        [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+          const tt = t + i * 0.09;
+          ["sawtooth", "square"].forEach(function (type, k) {
+            const o = osc(type, f * (k ? 0.5 : 1), tt, 0.5);
+            const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 3200;
+            const g = gainEnv(tt, 0.01, peak * (k ? 0.5 : 1), i === 3 ? 1.1 : 0.3);
+            o.connect(lp); lp.connect(g); out(g, 0.35, k ? -0.3 : 0.3);
+          });
+        });
+      },
+
+      /** Buzina de estádio: três toques de serra grave (BWAAA BWA BWAAA). */
+      horn(t, peak) {
+        peak = peak || 0.22;
+        [[0, 0.42], [0.5, 0.16], [0.72, 0.6]].forEach(function (p) {
+          const tt = t + p[0], d = p[1];
+          [466.16, 587.33, 698.46].forEach(function (f) {
+            const o = osc("sawtooth", f, tt, d);
+            o.frequency.setValueAtTime(f * 0.97, tt);
+            o.frequency.linearRampToValueAtTime(f, tt + 0.05);
+            const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2600; lp.Q.value = 2;
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(0.0001, tt);
+            g.gain.exponentialRampToValueAtTime(peak, tt + 0.02);
+            g.gain.setValueAtTime(peak, tt + d - 0.04);
+            g.gain.exponentialRampToValueAtTime(0.0001, tt + d);
+            o.connect(lp); lp.connect(g); out(g, 0.25);
+          });
+        });
+      },
+
+      /** Trombone triste (wah wah wah waaah) — para o "F". */
+      trombone(t, peak) {
+        peak = peak || 0.2;
+        [[392, 0.42], [369.99, 0.42], [349.23, 0.42], [329.63, 1.3]].forEach(function (n, i) {
+          const tt = t + i * 0.48, d = n[1];
+          const o = osc("sawtooth", n[0], tt, d);
+          if (i === 3) {
+            const lfo = osc("sine", 6, tt, d), lg = ctx.createGain();
+            lg.gain.value = 9; lfo.connect(lg); lg.connect(o.frequency);
+          }
+          const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 5;
+          lp.frequency.setValueAtTime(400, tt);
+          lp.frequency.linearRampToValueAtTime(1500, tt + d * 0.3);
+          lp.frequency.linearRampToValueAtTime(500, tt + d);
+          const g = gainEnv(tt, 0.04, peak, d);
+          o.connect(lp); lp.connect(g); out(g, 0.3);
+        });
+      },
+
+      /** Boing de desenho animado (mola). */
+      boing(t, peak) {
+        peak = peak || 0.3;
+        const o = osc("sine", 180, t, 0.9);
+        o.frequency.exponentialRampToValueAtTime(520, t + 0.12);
+        o.frequency.exponentialRampToValueAtTime(220, t + 0.9);
+        const lfo = osc("sine", 18, t, 0.9), lg = ctx.createGain();
+        lg.gain.setValueAtTime(60, t); lg.gain.exponentialRampToValueAtTime(1, t + 0.9);
+        lfo.connect(lg); lg.connect(o.frequency);
+        const g = gainEnv(t, 0.005, peak, 0.85);
+        o.connect(g); out(g, 0.2);
+      },
+
+      /** Zumbido distorcido de raiva (tilt). */
+      buzz(t, dur, peak) {
+        dur = dur || 0.8; peak = peak || 0.16;
+        const o = osc("sawtooth", 55, t, dur), o2 = osc("square", 58, t, dur);
+        const ws = ctx.createWaveShaper(), curve = new Float32Array(256);
+        for (let i = 0; i < 256; i++) { const x = i / 128 - 1; curve[i] = Math.tanh(x * 6); }
+        ws.curve = curve;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(peak, t + 0.03);
+        g.gain.setValueAtTime(peak, t + dur - 0.1);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(ws); o2.connect(ws); ws.connect(g); out(g, 0.1);
+      },
+
       /** Cama grave (pad) para dar clima; some sozinha no fim. */
       drone(t, dur, freq, peak) {
         freq = freq || 55; peak = peak || 0.12;

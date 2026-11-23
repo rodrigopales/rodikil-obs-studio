@@ -1,0 +1,21 @@
+{
+  "$comment": "Atalhos globais do script obs-config/scripts/rodikil-intro.lua. Aplicados por scripts/setup_obs_hotkeys.py (OBS fechado). Ctrl+Alt para não brigar com Ctrl+número do Dota (grupos de unidades). Números = mesmos do Painel Rodikil. Valor pode ser uma tecla ou uma lista de teclas.",
+  "rodikil_abrir_live": [
+    "Ctrl+Alt+0",
+    "Ctrl+Alt+I"
+  ],
+  "rodikil_cena_1": "Ctrl+Alt+1",
+  "rodikil_cena_2": "Ctrl+Alt+2",
+  "rodikil_cena_3": "Ctrl+Alt+3",
+  "rodikil_cena_4": "Ctrl+Alt+4",
+  "rodikil_cena_5": "Ctrl+Alt+5",
+  "rodikil_cena_6": "Ctrl+Alt+6",
+  "rodikil_mic": "Ctrl+Alt+M",
+  "rodikil_reacao_gg": "Ctrl+Alt+F1",
+  "rodikil_reacao_clutch": "Ctrl+Alt+F2",
+  "rodikil_reacao_f": "Ctrl+Alt+F3",
+  "rodikil_reacao_pateta": "Ctrl+Alt+F4",
+  "rodikil_reacao_hype": "Ctrl+Alt+F5",
+  "rodikil_reacao_tilt": "Ctrl+Alt+F6",
+  "rodikil_pix": "Ctrl+Alt+P"
+}

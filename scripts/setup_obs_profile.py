@@ -9,7 +9,7 @@ O OBS precisa estar FECHADO (senão ele sobrescreve tudo ao sair).
 
 Uso:
   python scripts/setup_obs_profile.py --dry-run
-  python scripts/setup_obs_profile.py                      # perfil "Sem nome"
+  python scripts/setup_obs_profile.py                      # perfil ativo no OBS
   python scripts/setup_obs_profile.py --profile "Meu perfil"
 """
 
@@ -21,6 +21,9 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import obs_paths  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "obs-config" / "profile"
@@ -89,11 +92,13 @@ def backup(path: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Aplica obs-config/profile/ num perfil do OBS (idempotente).")
-    ap.add_argument("--profile", default="Sem nome", help='Nome da pasta do perfil (padrão: "Sem nome")')
+    ap.add_argument("--profile", default=None, help="Pasta do perfil (padrão: o perfil ativo no OBS)")
     ap.add_argument("--dry-run", action="store_true", help="Só mostra o que mudaria")
     args = ap.parse_args()
 
+    args.profile = args.profile or obs_paths.active_profile_dir()
     target = PROFILES / args.profile
+    print(f"Perfil: {args.profile}")
     if not target.is_dir():
         found = ", ".join(p.name for p in PROFILES.glob("*") if p.is_dir()) or "nenhum"
         sys.exit(f"[ERRO] Perfil '{args.profile}' não existe em {PROFILES}. Encontrados: {found}.\n"

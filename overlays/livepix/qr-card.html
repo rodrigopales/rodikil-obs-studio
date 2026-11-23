@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Manda um Pix</title>
+  <!--
+    Cartão Rodikil "PIX DA RESENHA" com o QR Code do LivePix dentro (iframe do widget). Browser Source em modo URL (file:///...),
+    porque precisa de parâmetros — o link do widget vem do .env pelo apply_scene.py e nunca fica no Git:
+      ?src=<LIVEPIX_QRCODE_URL>          widget de QR Code do LivePix (obrigatório; deixe por último na URL)
+      &modo=fixo                         sempre visível (Iniciando/Intervalo)
+      &modo=ciclo&a=10&d=25&p=2          aparece a cada a min, fica d s; primeira vez após p min (cenas de jogo)
+      &titulo=...&legenda=...            troca os textos (opcional)
+    Tamanho da fonte: 320x460.
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <style>
+    .card {
+      position: absolute; left: 10px; top: 30px; width: 300px; height: 420px;
+      background: var(--rk-panel); border: 1px solid var(--rk-border); border-radius: var(--rk-radius-md);
+      box-shadow: 0 12px 30px rgba(0,0,0,.5);
+      display: flex; flex-direction: column; align-items: center; padding: 50px 0 0;
+    }
+    .pill-wrap { position: absolute; top: -2px; left: 0; right: 0; display: flex; justify-content: center; transform: translateY(-50%); }
+    .pill { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding: 0 20px 0 16px; border-radius: 999px; background: var(--rk-black); border: 2px solid var(--rk-border); white-space: nowrap; }
+    .pill i { width: 9px; height: 9px; border-radius: 50%; background: var(--rk-red); }
+    .pill b { font-family: var(--rk-font-display); font-weight: 700; font-size: 22px; letter-spacing: .1em; color: var(--rk-bone); }
+    .pill span { font-family: var(--rk-font-mono); font-size: 14px; letter-spacing: .14em; color: var(--rk-bone); }
+    /* o widget do LivePix centraliza o QR num quadro de 400x400; recortamos só o miolo */
+    .qr { width: 248px; height: 276px; overflow: hidden; border-radius: 12px; position: relative; background: #fff; }
+    .qr iframe { position: absolute; left: -76px; top: -62px; width: 400px; height: 400px; border: 0; opacity: 0; transition: opacity .4s; }
+    .qr iframe.on { opacity: 1; }
+    .caption { font-family: var(--rk-font-mono); font-size: 13px; letter-spacing: .16em; color: var(--rk-dust); text-transform: uppercase; margin-top: 18px; text-align: center; line-height: 1.6; }
+    .caption .sep { color: var(--rk-red); }
+    .spark { position: absolute; right: -10px; top: 40px; }
+
+    .card { opacity: 0; transform: translateX(40px); }
+    .card.in { animation: q-in .6s var(--rk-ease) forwards; }
+    .card.out { animation: q-out .5s ease-in forwards; }
+    @keyframes q-in { from { opacity: 0; transform: translateX(40px) scale(.96); } to { opacity: 1; transform: none; } }
+    @keyframes q-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(40px) scale(.96); } }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="pill-wrap"><span class="pill"><i></i><b id="titulo">PIX DA RESENHA</b></span></div>
+    <div class="qr" id="qr"></div>
+    <p class="caption" id="legenda">VALEU, GALERA <span class="sep">//</span></p>
+    <span class="rk-spark sm spark"></span>
+  </div>
+  <script>
+  (function () {
+    // src vem por último na URL e pode conter "?" — pega tudo depois de "src="
+    const q = location.search, i = q.indexOf("src=");
+    const src = i >= 0 ? decodeURIComponent(q.slice(i + 4)) : "";
+    const p = new URLSearchParams(i >= 0 ? q.slice(0, i) : q);
+    const modo = p.get("modo") || "fixo";
+    const card = document.getElementById("card");
+    /* O widget do LivePix mostra o QR por ~30 s depois de carregar e então some (ciclo dele).
+       Por isso recarregamos com DUAS cópias: a nova carrega por trás e só entra quando está pronta. */
+    const box = document.getElementById("qr");
+    function refreshQR(cb) {
+      if (!src) return cb && cb();
+      const f = document.createElement("iframe");
+      f.title = "QR Code LivePix"; f.scrolling = "no";
+      f.onload = () => setTimeout(() => {
+        f.classList.add("on");
+        Array.from(box.querySelectorAll("iframe")).filter((x) => x !== f).forEach((x) => setTimeout(() => x.remove(), 500));
+        cb && cb();
+      }, 2500);
+      f.src = src; box.appendChild(f);
+    }
+
+    if (p.get("titulo")) document.getElementById("titulo").textContent = p.get("titulo");
+    if (p.get("legenda")) document.getElementById("legenda").textContent = p.get("legenda");
+
+    let hideTimer = null;
+    function show(ms) {
+      clearTimeout(hideTimer);
+      if (!card.classList.contains("in")) {
+        refreshQR(() => { card.classList.remove("out"); void card.offsetWidth; card.classList.add("in"); });
+      }
+      if (ms) hideTimer = setTimeout(hide, ms);
+    }
+    function hide() { card.classList.remove("in"); void card.offsetWidth; card.classList.add("out"); }
+    // "Mostrar QR agora": atalho Ctrl+Alt+P (script Rodikil) ou botão do Painel
+    window.addEventListener("rodikil-pix", () => { if (modo === "ciclo") show(+(p.get("d") || 25) * 1000); });
+
+    if (modo === "ciclo") {
+      const a = +(p.get("a") || 10) * 60000, d = +(p.get("d") || 25) * 1000, first = +(p.get("p") || 2) * 60000;
+      const cycle = () => show(d);
+      setTimeout(() => { cycle(); setInterval(cycle, a); }, first);
+    } else {
+      show();
+      setInterval(() => refreshQR(), 25000); // troca antes dos ~30 s em que o widget esconde o QR
+    }
+  })();
+  </script>
+</body>
+</html>
