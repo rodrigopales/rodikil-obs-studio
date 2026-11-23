@@ -75,7 +75,6 @@ Estúdio (os atalhos nativos de cena do OBS só mudam a Prévia). Com o OBS **fe
 | `Ctrl+Alt+0` ou `Ctrl+Alt+I` | Abrir live (intro → Resenha) |
 | `Ctrl+Alt+M` | Microfone liga/desliga |
 | `Ctrl+Alt+F1` … `F6` | Reações: GG, CLUTCH, F, PATETA, HYPE, TILTOU |
-| `Ctrl+Alt+P` | Mostrar o cartão do Pix agora (cenas de jogo) |
 
 ### Reações com som
 `overlays/reacoes/index.html` (fonte `Overlay_Reacoes`, no topo das cenas de live). Dispare pelos atalhos acima

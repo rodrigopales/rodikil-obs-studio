@@ -415,13 +415,6 @@
       requestData: { event_name: "rodikil-reacao", event_data: { tipo: r.tipo } } }).catch((e) => toast("Reação falhou: " + e.message));
     $("reacts").appendChild(b);
   });
-  (() => {
-    const b = document.createElement("button"); b.className = "react"; b.innerHTML = 'QR PIX<em class="hk">CTRL+ALT+P</em>';
-    b.title = "Mostra o cartão do Pix agora nas cenas de jogo (atalho global: Ctrl+Alt+P)";
-    b.onclick = () => call("CallVendorRequest", { vendorName: "obs-browser", requestType: "emit_event",
-      requestData: { event_name: "rodikil-pix", event_data: {} } }).catch((e) => toast("Pix falhou: " + e.message));
-    $("reacts").appendChild(b);
-  })();
   $("btn-open").onclick = openLive;
   $("btn-mic").onclick = () => call("ToggleInputMute", { inputName: MIC }).catch(() => toast("Mic_Main não encontrado"));
   $("btn-stream").onclick = toggleStream;

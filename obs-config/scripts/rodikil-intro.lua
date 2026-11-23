@@ -157,9 +157,6 @@ function script_load(settings)
     local tipo = r.tipo
     register(settings, r.id, "Rodikil: reação " .. r.label, function() reacao(tipo) end)
   end
-  register(settings, "rodikil_pix", "Rodikil: mostrar Pix agora (cenas de jogo)", function()
-    js_event("Overlay_PixCardJogo", "rodikil-pix", "{}")
-  end)
 end
 
 function script_save(settings)
