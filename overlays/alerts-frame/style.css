@@ -1,0 +1,28 @@
+/* Alerta 900x260 — geometria medida na referência */
+body { width: 900px; height: 260px; }
+
+.alert { position: relative; width: 900px; height: 260px; }
+.alert.is-in  { animation: rk-in-left 0.6s var(--rk-ease) both; }
+.alert.is-out { animation: rk-out-left 0.45s var(--rk-ease) both; }
+
+.al-bar {
+  position: absolute;
+  left: 100px; top: 60px;
+  width: 770px; height: 150px;
+  border-radius: 20px 75px 75px 20px;
+  background: rgba(10, 10, 11, 0.94);
+}
+.al-symbol {
+  position: absolute;
+  left: 30px; top: 15px;
+  width: 124px; height: 236px;
+  overflow: hidden;
+}
+.al-symbol img { transform: scale(2.13); }
+.al-spark { left: 140px; top: 22px; opacity: 0.35; }
+
+.al-text { position: absolute; left: 200px; top: 84px; width: 600px; }
+.al-title { font-size: 30px; letter-spacing: 0.18em; color: var(--rk-red); line-height: 1; }
+.al-divider { margin: 16px 0 14px; }
+.al-msg { font-size: 16px; letter-spacing: 0.1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.al-msg b { color: var(--rk-bone); font-weight: 700; }

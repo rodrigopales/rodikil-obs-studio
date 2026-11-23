@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rodikil — Jogo com resenha</title>
+  <meta name="description" content="Rodikil: lives de CS2, Dota 2, GTA 6 e Fullace com os amigos, curiosidades e resenha. Vem jogar e resenhar com a gente.">
+  <link rel="icon" href="../brand/assets/simbolo-rodikil.png">
+  <link rel="stylesheet" href="../overlays/shared/theme.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a href="#topo" class="nav-logo"><img src="../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil"></a>
+    <nav class="nav-links">
+      <a href="#agenda">Agenda</a>
+      <a href="#jogos">Jogos</a>
+      <a href="#quadros">Quadros</a>
+      <a href="#ultima">Última live</a>
+      <a href="#sobre">Sobre</a>
+    </nav>
+    <a class="rk-pill is-red dot-bone nav-cta" href="https://www.youtube.com/@RODIKIL?sub_confirmation=1" target="_blank" rel="noopener"><i class="rk-dot"></i><span class="rk-label">INSCREVA-SE</span></a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero rk-space" id="topo">
+    <canvas class="rk-stars" data-seed="11"></canvas>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="rk-mono kicker">CANAL <span class="sep">//</span> JOGO COM RESENHA</p>
+        <h1 class="rk-headline">VEM JOGAR E <span class="rk-accent">RESENHAR</span> COM A GENTE</h1>
+        <p class="lead">Lives de CS2, Dota 2, GTA 6 e Fullace com os amigos, vídeos de curiosidades e muita resenha enquanto a fila não anda.</p>
+        <div class="ctas">
+          <a class="rk-pill is-red dot-bone" href="https://www.youtube.com/@RODIKIL" target="_blank" rel="noopener"><i class="rk-dot"></i><span class="rk-label">ASSISTIR NO YOUTUBE</span></a>
+          <a class="rk-pill is-outline" href="#agenda"><i class="rk-dot"></i><span class="rk-label">VER AGENDA</span></a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-orbit"></div>
+        <img class="hero-symbol" src="../brand/assets/simbolo-rodikil.png" alt="">
+        <span class="rk-spark" style="left:78%; top:12%"></span>
+        <span class="rk-spark sm" style="left:8%; top:70%"></span>
+        <div class="next-card rk-panel">
+          <p class="rk-mono">PRÓXIMA LIVE</p>
+          <p class="next-title" id="next-title">—</p>
+          <p class="rk-mono next-when" id="next-when"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENDA -->
+  <section class="section" id="agenda">
+    <p class="rk-mono kicker">TODA SEMANA <span class="sep">//</span> MESMO HORÁRIO</p>
+    <h2 class="rk-headline">A <span class="rk-accent">AGENDA</span></h2>
+    <div class="agenda" id="agenda-list"></div>
+    <p class="rk-mono note">E TODO DIA UM SHORT COM O MELHOR MOMENTO DA ÚLTIMA LIVE</p>
+  </section>
+
+  <!-- JOGOS -->
+  <section class="section" id="jogos">
+    <p class="rk-mono kicker">O QUE ROLA <span class="sep">//</span> NAS LIVES</p>
+    <h2 class="rk-headline">OS <span class="rk-accent">JOGOS</span></h2>
+    <div class="games">
+      <article class="game"><span class="game-num rk-mono">01</span><h3 class="rk-headline">DOTA 2</h3><p>Com os patetas. Ninguém sabe se vai ganhar, todo mundo sabe que vai ter resenha.</p></article>
+      <article class="game"><span class="game-num rk-mono">02</span><h3 class="rk-headline">CS2</h3><p>Competitivo com a galera, desafios do chat e clutch (às vezes).</p></article>
+      <article class="game"><span class="game-num rk-mono">03</span><h3 class="rk-headline">GTA 6</h3><p>Rolê livre pelo mapa caçando detalhe escondido e confusão.</p></article>
+      <article class="game"><span class="game-num rk-mono">04</span><h3 class="rk-headline">FULLACE</h3><p>Partidas rápidas, muita gritaria e revanche garantida.</p></article>
+    </div>
+  </section>
+
+  <!-- QUADROS -->
+  <section class="section" id="quadros">
+    <p class="rk-mono kicker">QUADROS <span class="sep">//</span> DO CANAL</p>
+    <h2 class="rk-headline">NÃO PERDE O <span class="rk-accent">QUADRO</span></h2>
+    <div class="shows">
+      <div class="show"><h3 class="rk-label">PATETA DA PARTIDA</h3><p>No fim da live o chat vota quem foi o pior da noite.</p></div>
+      <div class="show"><h3 class="rk-label">RESENHA NA FILA</h3><p>Papo e perguntas do chat enquanto o jogo não acha partida.</p></div>
+      <div class="show"><h3 class="rk-label">DESAFIO DO CHAT</h3><p>O chat escolhe a regra: só pistola, herói aleatório e por aí vai.</p></div>
+      <div class="show"><h3 class="rk-label">VOCÊ SABIA?</h3><p>Curiosidades e segredos dos jogos, em vídeo gravado.</p></div>
+    </div>
+  </section>
+
+  <!-- ÚLTIMA LIVE -->
+  <section class="section" id="ultima">
+    <p class="rk-mono kicker">PERDEU? <span class="sep">//</span> ASSISTE AGORA</p>
+    <h2 class="rk-headline">A <span class="rk-accent">ÚLTIMA</span> LIVE</h2>
+    <a class="video" id="video-link" href="#" target="_blank" rel="noopener">
+      <img id="video-thumb" alt="Última live do Rodikil">
+      <span class="play" aria-hidden="true"></span>
+    </a>
+    <p class="video-cap"><span class="rk-mono">YOUTUBE <span class="sep">//</span> REPLAY</span><strong class="rk-headline" id="video-title"></strong></p>
+  </section>
+
+  <!-- SOBRE -->
+  <section class="section about" id="sobre">
+    <div>
+      <p class="rk-mono kicker">QUEM <span class="sep">//</span> FAZ</p>
+      <h2 class="rk-headline">SOBRE O <span class="rk-accent">RODIKIL</span></h2>
+      <p class="lead">O Rodikil é um canal de jogo com resenha. A ideia nunca foi ser o melhor jogador do servidor: é juntar os amigos, ligar a câmera e trazer o chat para dentro da partida. Se você gosta de assistir jogo com zoeira e papo, chega mais.</p>
+      <a class="rk-pill is-outline-red" href="https://www.youtube.com/@RODIKIL?sub_confirmation=1" target="_blank" rel="noopener"><i class="rk-dot"></i><span class="rk-label">ATIVA O SININHO</span></a>
+    </div>
+    <img class="about-logo" src="../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+  </section>
+
+  <footer class="footer">
+    <img src="../brand/assets/simbolo-rodikil.png" alt="" class="footer-symbol">
+    <span class="rk-mono">@RODIKIL <span class="sep">//</span> YOUTUBE.COM/@RODIKIL</span>
+    <span class="rk-mono">© <span id="year"></span> RODIKIL</span>
+  </footer>
+
+  <script src="../overlays/shared/rodikil.js"></script>
+  <script>
+    /* ===== EDITE AQUI: agenda e última live ===== */
+    const AGENDA = [
+      { dia: 2, nome: "TERÇA",   hora: "20:00", titulo: "CS2",               sub: "Competitivo com a galera" },
+      { dia: 4, nome: "QUINTA",  hora: "20:00", titulo: "DOTA 2",            sub: "Com os patetas", destaque: true },
+      { dia: 6, nome: "SÁBADO",  hora: "15:00", titulo: "GTA 6 / FULLACE",   sub: "Live variada" },
+      { dia: 0, nome: "DOMINGO", hora: null,    titulo: "CURIOSIDADES",      sub: "Vídeo novo no canal" }
+    ];
+    const ULTIMA_LIVE = { id: "X9OIoxZXz-s", titulo: "DOTA 2 COM OS PATETAS" };
+    /* ============================================ */
+
+    const list = document.getElementById("agenda-list");
+    AGENDA.forEach(function (a) {
+      const el = document.createElement("article");
+      el.className = "slot" + (a.destaque ? " is-hot" : "");
+      el.innerHTML = '<p class="rk-mono slot-day">' + a.nome + '</p>' +
+        '<p class="slot-time rk-headline">' + (a.hora ? a.hora.replace(":00", "H") : "VÍDEO") + '</p>' +
+        '<h3 class="rk-headline">' + a.titulo + '</h3><p class="slot-sub">' + a.sub + '</p>';
+      list.appendChild(el);
+    });
+
+    // Próxima live a partir de agora (só itens com horário)
+    (function () {
+      const now = new Date();
+      let best = null;
+      AGENDA.filter(function (a) { return a.hora; }).forEach(function (a) {
+        const p = a.hora.split(":");
+        const d = new Date(now);
+        d.setHours(+p[0], +p[1], 0, 0);
+        let add = (a.dia - now.getDay() + 7) % 7;
+        if (add === 0 && d <= now) add = 7;
+        d.setDate(d.getDate() + add);
+        if (!best || d < best.d) best = { d: d, a: a, add: add };
+      });
+      if (!best) return;
+      const quando = best.add === 0 ? "HOJE" : best.add === 1 ? "AMANHÃ" : best.a.nome;
+      document.getElementById("next-title").textContent = best.a.titulo;
+      document.getElementById("next-when").textContent = quando + " // " + best.a.hora.replace(":00", "H");
+    })();
+
+    document.getElementById("video-link").href = "https://www.youtube.com/watch?v=" + ULTIMA_LIVE.id;
+    document.getElementById("video-thumb").src = "https://i.ytimg.com/vi/" + ULTIMA_LIVE.id + "/hqdefault.jpg";
+    document.getElementById("video-title").textContent = ULTIMA_LIVE.titulo;
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

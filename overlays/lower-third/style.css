@@ -1,0 +1,34 @@
+/* Faixa de nome 1100x200 — geometria medida na referência */
+body { width: 1100px; height: 200px; }
+
+.lt { position: relative; width: 1100px; height: 200px; animation: rk-in-left 0.7s var(--rk-ease) both; }
+.lt.is-out { animation: rk-out-left 0.5s var(--rk-ease) both; }
+
+.lt-bar {
+  position: absolute;
+  left: 20px; top: 30px;
+  width: 1060px; height: 140px;
+  border-radius: 70px;
+}
+.lt-symbol {
+  position: absolute;
+  left: 36px; top: 0;
+  width: 106px; height: 200px;
+  overflow: hidden;
+}
+.lt-symbol img { transform: scale(2.13); }  /* PNG 1000x1000 com respiro → enquadra o R */
+
+.lt-text { position: absolute; left: 172px; top: 42px; }
+.lt-title { font-size: 58px; line-height: 1; color: var(--rk-bone); }
+.lt-title.rk-headline { font-size: 64px; }
+.lt-sub { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.lt-dash { display: inline-block; width: 40px; height: 2px; background: var(--rk-red); }
+.lt-sub .rk-mono { font-size: 20px; letter-spacing: 0.08em; color: var(--rk-bone); }
+
+.lt-live {
+  position: absolute;
+  left: 780px; top: 68px;
+  height: 64px;
+  padding: 0 28px 0 26px;
+}
+.lt-live .rk-label { font-size: 28px; }

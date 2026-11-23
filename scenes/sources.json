@@ -1,0 +1,276 @@
+{
+  "$comment": "Catálogo de inputs (fontes). No OBS, inputs são GLOBAIS: settings e filtros valem para todas as cenas. Cada arquivo de cena só referencia o nome e define transform/enabled/locked/ordem. Configurações específicas da máquina (IDs de dispositivo/janela) NÃO entram aqui — são escolhidas uma vez no próprio OBS.",
+  "inputs": {
+    "Game_Capture": {
+      "kind": "game_capture",
+      "$comment": "Fixado no Dota 2 (hook automático sempre que dota2.exe abrir). Para lives de outro jogo, troque 'window' — ex.: CS2 = 'Counter-Strike 2:SDL_app:cs2.exe' — e rode apply_scene.py.",
+      "settings": {
+        "capture_mode": "window",
+        "window": "Dota 2:SDL_app:dota2.exe",
+        "priority": 2,
+        "capture_cursor": false,
+        "allow_transparency": false,
+        "anti_cheat_hook": true
+      }
+    },
+    "Game_Capture_CS2": {
+      "kind": "game_capture",
+      "$comment": "Captura própria do CS2 (hook automático sempre que cs2.exe abrir). Separada da Game_Capture (Dota) para as duas cenas funcionarem sem trocar nada.",
+      "settings": {
+        "capture_mode": "window",
+        "window": "Counter-Strike 2:SDL_app:cs2.exe",
+        "priority": 2,
+        "capture_cursor": false,
+        "allow_transparency": false,
+        "anti_cheat_hook": true
+      }
+    },
+    "Display_Capture": {
+      "kind": "monitor_capture",
+      "settings": {
+        "capture_cursor": true
+      }
+    },
+    "Webcam_Main": {
+      "kind": "dshow_input",
+      "settings": {
+        "res_type": 1,
+        "resolution": "1280x720"
+      },
+      "$comment": "720p de propósito: em 1080p o recorte custava ~15 ms/quadro e derrubava frames com o Dota aberto; em 720p fica ~8 ms e 0 frames perdidos (medido em 22/11/2026). Recorte pelo plugin obs-backgroundremoval 1.4.1 (C:/ProgramData/obs-studio/plugins), na CPU — GTX 1060 não tem NVIDIA Broadcast e o DirectML ficou mais lento. O Overlay_WebcamBg fica logo abaixo com o mesmo transform.",
+      "filters": [
+        {
+          "name": "Recorte de Fundo",
+          "kind": "background_removal",
+          "settings": {
+            "model_select": "models/mediapipe.with_runtime_opt.ort",
+            "useGPU": "cpu",
+            "numThreads": 2,
+            "blur_background": 12,
+            "threshold": 0.55,
+            "contour_filter": 0.1,
+            "smooth_contour": 0.9,
+            "feather": 0.12,
+            "mask_expansion": 0.0,
+            "mask_every_x_frames": 2,
+            "temporal_smooth_factor": 0.95,
+            "stop_when_source_is_inactive": true
+          }
+        },
+        {
+          "name": "Cor da Webcam",
+          "kind": "color_filter_v2",
+          "settings": {
+            "contrast": 0.12,
+            "saturation": 0.18,
+            "gamma": 0.05,
+            "color_multiply": 4294308607
+          }
+        }
+      ]
+    },
+    "Mic_Main": {
+      "kind": "wasapi_input_capture",
+      "settings": {
+        "device_id": "${MIC_DEVICE_ID}"
+      },
+      "$comment": "Fifine. Só os filtros abaixo são gerenciados pelo Git; gate, supressão, ganho e VST (ERA6) são configurados no OBS e nunca são apagados pelo apply_scene.py.",
+      "filters": [
+        {
+          "name": "Compressor",
+          "kind": "compressor_filter",
+          "settings": {
+            "ratio": 4.0,
+            "threshold": -18.0,
+            "attack_time": 6,
+            "release_time": 60,
+            "output_gain": 0.0
+          }
+        },
+        {
+          "name": "Limitador",
+          "kind": "limiter_filter",
+          "settings": {
+            "threshold": -3.0,
+            "release_time": 60
+          }
+        }
+      ]
+    },
+    "Desktop_Audio": {
+      "kind": "wasapi_output_capture",
+      "settings": {}
+    },
+    "Overlay_Iniciando": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/starting-screen/iniciando.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": true,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_Intervalo": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/starting-screen/intervalo.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": true,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_Encerrando": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/starting-screen/encerrando.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": true,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_Resenha": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/starting-screen/resenha.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_CameraFrame": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/camera-frame/index.html",
+        "width": 720,
+        "height": 480,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_WebcamBg": {
+      "kind": "browser_source",
+      "$comment": "Fundo virtual atrás do Rodikil. Fica ABAIXO da Webcam_Main com o mesmo transform; só aparece com o filtro Background Removal (plugin obs-backgroundremoval) na Webcam_Main.",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/webcam-bg/index.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_WebcamClima": {
+      "kind": "browser_source",
+      "$comment": "Camada transparente por CIMA da Webcam_Main (mesmo transform, abaixo da moldura): identidade Rodikil nas bordas sobre o quarto desfocado pelo filtro.",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/webcam-bg/clima.html",
+        "width": 1920,
+        "height": 1080,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_Chat": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/chat-frame/index.html",
+        "width": 480,
+        "height": 800,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_ChatFeed": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": false,
+        "url": "${YOUTUBE_CHAT_URL}",
+        "width": 420,
+        "height": 656,
+        "css": "@file:overlays/chat-frame/feed.css",
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_Alerts": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/alerts-frame/index.html",
+        "width": 900,
+        "height": 260,
+        "restart_when_active": false,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_LowerThird": {
+      "kind": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/overlays/lower-third/index.html",
+        "width": 1100,
+        "height": 200,
+        "restart_when_active": true,
+        "shutdown": false,
+        "reroute_audio": false
+      }
+    },
+    "Overlay_Logo": {
+      "kind": "image_source",
+      "settings": {
+        "file": "${PROJECT_ROOT}/brand/assets/logo-rodikil-fundo-escuro.png"
+      },
+      "filters": [
+        {
+          "name": "Opacidade",
+          "kind": "color_filter_v2",
+          "settings": {
+            "opacity": 0.85
+          }
+        }
+      ]
+    },
+    "Overlay_Musica": {
+      "kind": "ffmpeg_source",
+      "$comment": "Música de fundo da tela de abertura. Arquivo SEM direitos autorais (Biblioteca de Áudio do YouTube ou Pixabay). Toca em loop só quando a cena está no ar.",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "${PROJECT_ROOT}/assets/audio/bgm-iniciando.mp3",
+        "looping": true,
+        "restart_on_activate": true,
+        "close_when_inactive": true,
+        "clear_on_media_end": false
+      },
+      "filters": [
+        {
+          "name": "Volume BGM",
+          "kind": "gain_filter",
+          "settings": {
+            "db": -14.0
+          }
+        }
+      ]
+    }
+  }
+}

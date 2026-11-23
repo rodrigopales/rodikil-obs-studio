@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Tela cheia</title>
+  <!--
+    Browser Source 1920x1080 ("Arquivo local"). Um HTML por preset — iniciando.html, intervalo.html,
+    encerrando.html, resenha.html — cada um fixa window.RK_PARAMS. index.html = iniciando.
+    No navegador também aceita query string:
+      ?tela=iniciando   (padrão)  — "A LIVE JÁ VAI COMEÇAR"   [&countdown=300 segundos]
+      ?tela=intervalo             — "JÁ V●LTO"
+      ?tela=encerrando            — "VALEU, GALERA!" + CTAs
+      ?tela=resenha               — fundo da cena Resenha (kicker + rodapé, centro livre p/ câmera/chat)
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="rk-space" id="stage">
+    <canvas class="rk-stars" data-seed="11"></canvas>
+    <div class="rk-orbit" id="orbit"></div>
+    <span class="rk-spark" style="left:1332px; top:282px"></span>
+    <span class="rk-spark sm" style="left:554px; top:635px"></span>
+    <span class="rk-spark sm" style="left:1493px; top:674px"></span>
+
+    <section class="content" id="content"></section>
+
+    <footer class="footer">
+      <span class="rk-mono handle">@RODIKIL</span>
+      <span class="rk-mono">YOUTUBE.COM/@RODIKIL</span>
+    </footer>
+  </main>
+
+  <template id="tpl-iniciando">
+    <p class="rk-mono kicker">TRANSMISSÃO // AO VIVO</p>
+    <img class="logo" src="../../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+    <h1 class="rk-headline h-start">A LIVE JÁ VAI <span class="rk-accent">COMEÇAR</span></h1>
+    <p class="rk-mono sub">PEGA O LANCHE E CHAMA A GALERA</p>
+    <p class="rk-mono countdown" id="countdown" hidden></p>
+  </template>
+
+  <template id="tpl-intervalo">
+    <h1 class="rk-headline h-brb">JÁ V<span class="o-ellipse" aria-label="O"></span>LTO</h1>
+    <p class="rk-mono sub">NÃO SAI DAÍ — A LIVE CONTINUA EM INSTANTES</p>
+  </template>
+
+  <template id="tpl-encerrando">
+    <h1 class="rk-headline h-end">VALEU, <span class="rk-accent">GALERA!</span></h1>
+    <p class="rk-mono sub">A LIVE ACABOU — ATÉ A PRÓXIMA</p>
+    <div class="ctas">
+      <span class="rk-pill is-outline-red"><i class="rk-dot"></i><span class="rk-label">INSCREVA-SE</span></span>
+      <span class="rk-pill is-outline"><i class="rk-dot"></i><span class="rk-label">DEIXA O LIKE</span></span>
+      <span class="rk-pill is-outline"><i class="rk-dot"></i><span class="rk-label">ATIVA O SININHO</span></span>
+    </div>
+    <img class="logo logo-sm" src="../../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+  </template>
+
+  <template id="tpl-resenha">
+    <p class="rk-mono kicker kicker-top">RESENHA // AO VIVO</p>
+  </template>
+
+  <script src="../shared/rodikil.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

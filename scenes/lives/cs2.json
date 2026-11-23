@@ -1,0 +1,116 @@
+{
+  "scene": "Live - CS2",
+  "description": "Live de CS2 no padrão de mercado: nada sobre radar e dinheiro (sup. esq.), placar/tempo (topo centro), killfeed (sup. dir.), vida/colete (inf. esq.) e munição/armas (inf. dir.). Câmera no mesmo tamanho da Live - Dota 2 (~20% da largura), na lateral esquerda abaixo do dinheiro; alertas no topo, abaixo do placar. Sem chat na tela. Captura própria (Game_Capture_CS2, fixa em cs2.exe) para não mexer na do Dota. Mic_Main (Fifine) é fonte da cena.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "$layout": {
+    "camera": "Overlay_CameraFrame escala 0.6 em (4, 380) → furo 384x216 em (28, 440)",
+    "alerts": "Overlay_Alerts escala 0.6 em (690, 130)"
+  },
+  "items": [
+    {
+      "source": "Game_Capture_CS2",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_INNER",
+        "boundsWidth": 1920,
+        "boundsHeight": 1080,
+        "boundsAlignment": 0
+      }
+    },
+    {
+      "source": "Overlay_WebcamBg",
+      "locked": true,
+      "transform": {
+        "positionX": 28,
+        "positionY": 440,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 384,
+        "boundsHeight": 216,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      },
+      "enabled": false
+    },
+    {
+      "source": "Webcam_Main",
+      "locked": true,
+      "transform": {
+        "positionX": 28,
+        "positionY": 440,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 384,
+        "boundsHeight": 216,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_WebcamClima",
+      "locked": true,
+      "transform": {
+        "positionX": 28,
+        "positionY": 440,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 384,
+        "boundsHeight": 216,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_CameraFrame",
+      "locked": true,
+      "transform": {
+        "positionX": 4,
+        "positionY": 380,
+        "alignment": 5,
+        "scaleX": 0.6,
+        "scaleY": 0.6
+      }
+    },
+    {
+      "source": "Overlay_Logo",
+      "enabled": false,
+      "transform": {
+        "positionX": 1744,
+        "positionY": 22,
+        "alignment": 5,
+        "scaleX": 0.0846,
+        "scaleY": 0.0846
+      }
+    },
+    {
+      "source": "Overlay_LowerThird",
+      "enabled": false,
+      "transform": {
+        "positionX": 690,
+        "positionY": 130,
+        "alignment": 5,
+        "scaleX": 0.6,
+        "scaleY": 0.6
+      }
+    },
+    {
+      "source": "Overlay_Alerts",
+      "transform": {
+        "positionX": 690,
+        "positionY": 130,
+        "alignment": 5,
+        "scaleX": 0.6,
+        "scaleY": 0.6
+      }
+    },
+    {
+      "source": "Mic_Main"
+    }
+  ]
+}

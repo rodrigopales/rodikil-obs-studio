@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Intro 3 — Contagem</title>
+  <!--
+    INTRO 3 — CONTAGEM (hype, 7 s)
+    A elipse vermelha conta 3 · 2 · 1 batendo no grave -> o número vira o R (símbolo) com IMPACTO
+    -> "A LIVE COMEÇOU" sobe -> brilhos -> fade p/ preto.
+    Browser Source 1920x1080, "Arquivo local", marcar "Controlar áudio via OBS" e
+    "Reiniciar quando a cena ficar ativa".
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="intro.css">
+  <style>
+    .sky { position: absolute; inset: 0; }
+    .play .sky { animation: c-sky 1s both; }
+    @keyframes c-sky { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Elipse da contagem: mesma proporção da elipse do símbolo (470x890) */
+    .counter {
+      position: absolute; left: 840px; top: 173px; width: 240px; height: 454px;
+      background: var(--rk-red); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .counter .num { font-family: var(--rk-font-display); font-weight: 800; font-size: 250px; line-height: 1; color: var(--rk-black); }
+    .play .counter { animation: c-in .4s .3s cubic-bezier(.2,1.6,.4,1) both, c-hide 0s 3s forwards; }
+    @keyframes c-in { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
+    @keyframes c-hide { to { visibility: hidden; } }
+    .counter.beat { animation: c-beat .4s cubic-bezier(.2,1.6,.4,1) both, c-hide 0s var(--hide-in) forwards !important; }
+    @keyframes c-beat { 0% { transform: scale(1.16); } 100% { transform: scale(1); } }
+    .num.slam { animation: c-num .35s cubic-bezier(.2,1.6,.4,1) both; }
+    @keyframes c-num { 0% { opacity: 0; transform: scale(1.8); } 100% { opacity: 1; transform: scale(1); } }
+
+    /* Anéis de órbita pulsando a cada número */
+    .orbit-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .orbit-svg ellipse { fill: none; stroke: var(--rk-orbit); stroke-width: 2.5; }
+    .play .orbit-svg { animation: c-orbit .5s .3s var(--rk-ease) both; transform-origin: 960px 400px; }
+    @keyframes c-orbit { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: scale(1); } }
+    .orbit-svg.pulse { animation: c-orbit-pulse .5s var(--rk-ease) both; }
+    @keyframes c-orbit-pulse { 0% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+    /* Símbolo: a elipse da imagem coincide com a da contagem (troca sem emenda) */
+    .symbol { position: absolute; left: 704.7px; top: 144.7px; width: 510.6px; height: 510.6px; opacity: 0; }
+    .play .symbol { animation: c-sym .6s 3s cubic-bezier(.2,1.6,.4,1) forwards; }
+    @keyframes c-sym {
+      0% { opacity: 1; transform: scale(1.25); filter: drop-shadow(0 0 70px rgba(250,43,40,1)); }
+      100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 22px rgba(250,43,40,.35)); }
+    }
+
+    .shock {
+      position: absolute; left: 960px; top: 400px; width: 40px; height: 40px; margin: -20px 0 0 -20px;
+      border: 3px solid var(--rk-bone); border-radius: 50%; opacity: 0;
+    }
+    .play .shock { animation: c-shock 1s 3s cubic-bezier(.1,.7,.3,1) forwards; }
+    @keyframes c-shock { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(40); } }
+    .play .flash { animation: rk-flash .5s 3s ease-out both; }
+
+    .headline { position: absolute; left: 0; right: 0; top: 670px; text-align: center; font-size: 150px; }
+    .play .headline { animation: c-up .7s 3.35s var(--rk-ease) both; }
+    @keyframes c-up { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: none; } }
+    .sub { position: absolute; left: 0; right: 0; top: 850px; text-align: center; font-size: 28px; color: var(--rk-bone); }
+    .sub .sep { color: var(--rk-red); }
+    .play .sub { animation: c-up .6s 3.9s var(--rk-ease) both; }
+
+    .s1 { left: 1250px; top: 190px; } .s2 { left: 640px; top: 560px; } .s3 { left: 1330px; top: 600px; }
+    .s2, .s3 { scale: .65; }
+    .play .s1 { animation: rk-spark-in .6s 3.6s var(--rk-ease) both, rk-twinkle 2s 4.2s ease-in-out infinite; }
+    .play .s2 { animation: rk-spark-in .6s 3.75s var(--rk-ease) both, rk-twinkle 2s 4.35s ease-in-out infinite; }
+    .play .s3 { animation: rk-spark-in .6s 3.9s var(--rk-ease) both, rk-twinkle 2s 4.5s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div class="rk-space">
+      <canvas class="rk-stars sky anim" data-seed="31"></canvas>
+      <svg class="orbit-svg anim" id="orbit" viewBox="0 0 1920 1080">
+        <ellipse cx="960" cy="400" rx="430" ry="120" transform="rotate(-8 960 400)"></ellipse>
+      </svg>
+      <div class="counter anim" id="counter"><span class="num" id="num"></span></div>
+      <div class="shock anim"></div>
+      <img class="symbol anim" src="../../brand/assets/simbolo-rodikil.png" alt="Rodikil">
+      <h1 class="rk-headline headline anim">A LIVE <span class="rk-accent">COMEÇOU</span></h1>
+      <p class="rk-mono sub anim">PEGA O LANCHE <span class="sep">//</span> CHAMA A GALERA</p>
+      <span class="rk-spark spark s1 anim"></span>
+      <span class="rk-spark spark s2 anim"></span>
+      <span class="rk-spark spark s3 anim"></span>
+      <div class="layer flash"></div>
+      <div class="layer blackout"></div>
+    </div>
+  </div>
+
+  <script src="../shared/rodikil.js"></script>
+  <script src="sfx.js"></script>
+  <script src="intro.js"></script>
+  <script>
+    const BEATS = [[0.3, "3"], [1.2, "2"], [2.1, "1"]];
+    const counter = document.getElementById("counter");
+    const num = document.getElementById("num");
+    const orbit = document.getElementById("orbit");
+    function beat(n, at, first) {
+      return function () {
+        num.textContent = n;
+        num.classList.remove("slam"); void num.offsetWidth; num.classList.add("slam");
+        if (!first) {
+          counter.style.setProperty("--hide-in", (3 - at).toFixed(2) + "s");
+          counter.classList.remove("beat"); void counter.offsetWidth; counter.classList.add("beat");
+          orbit.classList.remove("pulse"); void orbit.offsetWidth; orbit.classList.add("pulse");
+        }
+      };
+    }
+    function reset() { num.textContent = ""; counter.classList.remove("beat"); orbit.classList.remove("pulse"); }
+
+    RKIntro.run({
+      duration: 7,
+      steps: [[0, reset]].concat(BEATS.map(function (b, i) { return [b[0], beat(b[1], b[0], i === 0)]; })),
+      sound: function (s, t) {
+        s.drone(t, 6.9, 41.2, 0.09);
+        BEATS.forEach(function (b, i) { s.tick(t + b[0], 0.75 + i * 0.1); });
+        s.riser(t + 2.1, 0.9, 0.24);
+        s.impact(t + 3.0, 1);
+        s.whoosh(t + 3.3, 0.6, 300, 2500, 0.3, 0.25, 0, 0);
+        s.shimmer(t + 3.6, 0.11);
+        s.blip(t + 3.95, 1320, 0.04, 0.05, "sine");
+        s.whoosh(t + 6.0, 0.95, 3200, 180, 0.28, 0.45, 0.7, -0.7);
+      }
+    });
+  </script>
+</body>
+</html>

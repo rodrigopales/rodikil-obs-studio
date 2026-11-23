@@ -1,0 +1,138 @@
+{
+  "scene": "Live - Fullace",
+  "description": "Live de Fullace. Layout de referência da identidade (cena-jogo-com-camera): câmera inferior esquerda, logo superior direito, chat à direita.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "$layout": {
+    "camera": "Overlay_CameraFrame escala 0.875 em (13, 588.5) → furo 560x315 em (48, 676)",
+    "chat": "Overlay_Chat escala 0.75 em (1536, 240)"
+  },
+  "items": [
+    {
+      "source": "Game_Capture",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_INNER",
+        "boundsWidth": 1920,
+        "boundsHeight": 1080,
+        "boundsAlignment": 0
+      }
+    },
+    {
+      "source": "Overlay_WebcamBg",
+      "locked": true,
+      "transform": {
+        "positionX": 48.0,
+        "positionY": 676.0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 560.0,
+        "boundsHeight": 315.0,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      },
+      "enabled": false
+    },
+    {
+      "source": "Webcam_Main",
+      "locked": true,
+      "transform": {
+        "positionX": 48.0,
+        "positionY": 676.0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 560.0,
+        "boundsHeight": 315.0,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_WebcamClima",
+      "locked": true,
+      "transform": {
+        "positionX": 48.0,
+        "positionY": 676.0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 560.0,
+        "boundsHeight": 315.0,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_CameraFrame",
+      "locked": true,
+      "transform": {
+        "positionX": 13,
+        "positionY": 588.5,
+        "alignment": 5,
+        "scaleX": 0.875,
+        "scaleY": 0.875
+      }
+    },
+    {
+      "source": "Overlay_Chat",
+      "locked": true,
+      "transform": {
+        "positionX": 1536,
+        "positionY": 240,
+        "alignment": 5,
+        "scaleX": 0.75,
+        "scaleY": 0.75
+      }
+    },
+    {
+      "source": "Overlay_ChatFeed",
+      "locked": true,
+      "transform": {
+        "positionX": 1558.5,
+        "positionY": 294.0,
+        "alignment": 5,
+        "scaleX": 0.75,
+        "scaleY": 0.75
+      }
+    },
+    {
+      "source": "Overlay_Logo",
+      "enabled": true,
+      "transform": {
+        "positionX": 1744,
+        "positionY": 22,
+        "alignment": 5,
+        "scaleX": 0.085,
+        "scaleY": 0.085
+      }
+    },
+    {
+      "source": "Overlay_LowerThird",
+      "enabled": false,
+      "transform": {
+        "positionX": 660,
+        "positionY": 860,
+        "alignment": 5,
+        "scaleX": 0.8,
+        "scaleY": 0.8
+      }
+    },
+    {
+      "source": "Overlay_Alerts",
+      "transform": {
+        "positionX": 510,
+        "positionY": 110,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
+      "source": "Mic_Main"
+    }
+  ]
+}

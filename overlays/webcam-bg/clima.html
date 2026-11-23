@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Clima da webcam</title>
+  <!--
+    Overlay_WebcamClima: camada TRANSPARENTE por CIMA da Webcam_Main (mesmo transform, abaixo da moldura).
+    Combina com o filtro em modo desfoque: o quarto fica borrado e esta camada põe a identidade Rodikil
+    nas bordas (vinheta Preto Glitter, brilho vermelho, estrelas e logo). Centro livre = rosto limpo.
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <style>
+    /* Tudo some em direção ao centro (onde a pessoa fica) */
+    .edges {
+      position: absolute; inset: 0;
+      -webkit-mask-image: radial-gradient(ellipse 38% 48% at 54% 60%, transparent 40%, #000 100%);
+              mask-image: radial-gradient(ellipse 38% 48% at 54% 60%, transparent 40%, #000 100%);
+    }
+    .vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 62% 70% at 50% 58%, transparent 50%, rgba(10,10,11,.55) 78%, rgba(10,10,11,.85) 100%);
+    }
+    .tint { position: absolute; inset: 0; background: rgba(10,10,11,.5); }
+    .blob { position: absolute; border-radius: 50%; background: var(--rk-red); filter: blur(90px); }
+    .b1 { right: -160px; top: -220px; width: 560px; height: 900px; opacity: .42; animation: c-breathe 10s ease-in-out infinite; }
+    .b2 { left: -220px; bottom: -300px; width: 520px; height: 860px; opacity: .3; animation: c-breathe 12s ease-in-out infinite reverse; }
+    @keyframes c-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    canvas.rk-stars { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .8; }
+
+    .logo { position: absolute; right: 70px; top: 56px; width: 300px; }
+  </style>
+</head>
+<body>
+  <div class="edges">
+    <div class="tint"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <canvas class="rk-stars" data-seed="47"></canvas>
+    <span class="rk-spark" style="left:1640px; top:420px"></span>
+    <span class="rk-spark sm" style="left:240px; top:220px"></span>
+    <span class="rk-spark sm" style="left:1760px; top:860px; animation-delay:1.4s"></span>
+  </div>
+  <div class="vignette"></div>
+  <img class="logo" src="../../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+  <script src="../shared/rodikil.js"></script>
+</body>
+</html>

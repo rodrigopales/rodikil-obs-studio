@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Moldura de câmera</title>
+  <!--
+    Browser Source 720x480 (ref.: identidade-visual/moldura-camera-640x360.png)
+    Furo transparente da câmera: x=40 y=100, 640x360 (16:9) em coordenadas do widget.
+    Na cena, posicione Webcam_Main em: (frameX + 40*s, frameY + 100*s), bounds 640*s x 360*s,
+    onde s = escala aplicada ao Overlay_CameraFrame.  Webcam fica ABAIXO da moldura na ordem.
+    Query string:
+      ?label=RODIKIL   &sub=AO VIVO   &pill=0 (esconde a pílula)
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <style>
+    body { width: 720px; height: 480px; }
+    .cf-pill { position: absolute; left: 32px; top: 38px; }
+    .cf-pill .rk-label { font-size: 26px; letter-spacing: 0.1em; }
+    .cf-pill .rk-mono { font-size: 15px; letter-spacing: 0.1em; }
+    .cf-frame {
+      position: absolute;
+      left: 30px; top: 90px;
+      width: 660px; height: 380px;
+      border: 2px solid var(--rk-red);
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 8px var(--rk-black), 0 2px 8px rgba(0, 0, 0, 0.5); /* cabe no widget: sombra maior seria cortada na borda */
+    }
+  </style>
+</head>
+<body>
+  <span class="rk-pill rk-live cf-pill" id="pill">
+    <i class="rk-dot"></i>
+    <span class="rk-label" id="label">RODIKIL</span>
+    <span class="rk-mono" id="sub">// AO VIVO</span>
+  </span>
+  <div class="cf-frame"></div>
+  <script src="../shared/rodikil.js"></script>
+  <script>
+    document.getElementById("label").textContent = Rodikil.param("label", "RODIKIL").toUpperCase();
+    document.getElementById("sub").textContent = "// " + Rodikil.param("sub", "AO VIVO").toUpperCase();
+    if (Rodikil.param("pill", "1") === "0") document.getElementById("pill").remove();
+  </script>
+</body>
+</html>

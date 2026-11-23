@@ -1,0 +1,33 @@
+/*
+  CSS personalizado para o Overlay_ChatFeed (popout do chat do YouTube).
+  Use como "Custom CSS" do Browser Source — apply_scene.py injeta o conteúdo deste arquivo
+  via a chave "css": "@file:overlays/chat-frame/feed.css".
+*/
+/* Sem @import de fontes: a CSP do chat do YouTube bloqueia fonts.googleapis.com.
+   Barlow Condensed / Space Mono só aparecem se estiverem instaladas no Windows; senão usa o fallback. */
+
+body, html, yt-live-chat-app, yt-live-chat-renderer, #item-scroller, #items, #item-offset {
+  background: transparent !important;
+  overflow: hidden !important;
+}
+yt-live-chat-header-renderer, #panel-pages, yt-live-chat-banner-manager,
+#ticker, yt-live-chat-viewer-engagement-message-renderer, #author-photo,
+#menu, #chip-container { display: none !important; }
+
+yt-live-chat-text-message-renderer { padding: 6px 4px !important; }
+#author-name {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 22px !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: #FA2B28 !important;
+}
+#author-name.moderator, #author-name.owner { color: #F4F1EA !important; }
+#message {
+  font-family: "Space Mono", Consolas, monospace !important;
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+  color: #F4F1EA !important;
+}
+#timestamp { display: none !important; }

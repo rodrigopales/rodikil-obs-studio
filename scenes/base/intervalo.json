@@ -1,0 +1,19 @@
+{
+  "scene": "Base - Intervalo",
+  "description": "Tela 'Já volto'. Sem Mic_Main: o microfone só fica aberto em Resenha e nas lives.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "items": [
+    {
+      "source": "Overlay_Intervalo",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5
+      }
+    }
+  ]
+}

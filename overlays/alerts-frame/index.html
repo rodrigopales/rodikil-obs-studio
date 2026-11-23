@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Alertas</title>
+  <!--
+    Browser Source 900x260 (ref.: identidade-visual/alerta-*.png). Fundo transparente; só aparece durante um alerta.
+
+    Disparo de alertas:
+      1) Via OBS WebSocket (obs-browser vendor request):
+           CallVendorRequest  vendorName="obs-browser"  requestType="emit_event"
+           requestData={"event_name":"rodikil-alert","event_data":{"type":"inscrito","user":"Fulano"}}
+      2) Via JS no mesmo documento: window.rodikilAlert({type, user, message})
+      3) Teste: ?demo=1 (cicla os tipos a cada 8s)
+
+    Tipos: inscrito | superchat | membro | raid  (cada um tem título/mensagem padrão)
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="alert" id="alert" hidden>
+    <span class="rk-spark sm al-spark"></span>
+    <div class="al-bar rk-panel"></div>
+    <div class="rk-ellipse al-symbol"><img src="../../brand/assets/simbolo-rodikil.png" alt=""></div>
+    <div class="al-text">
+      <div class="rk-label al-title" id="al-title"></div>
+      <hr class="rk-divider al-divider">
+      <div class="rk-mono al-msg" id="al-msg"></div>
+    </div>
+  </div>
+  <script src="../shared/rodikil.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

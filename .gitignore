@@ -1,0 +1,34 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Segredos
+.env
+
+# Logs e temporários
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Mídia pesada (gravações/vídeos não vão para o Git)
+*.mkv
+*.mp4
+*.mov
+*.flv
+*.ts
+*.avi
+
+# Editor
+.vscode/
+.idea/
+
+# Configuração local do Claude Code
+.claude/settings.local.json

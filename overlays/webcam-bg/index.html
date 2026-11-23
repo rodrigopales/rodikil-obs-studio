@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Fundo da webcam</title>
+  <!--
+    Fundo virtual atrás do Rodikil (Overlay_WebcamBg). Browser Source 1920x1080, fica ABAIXO da Webcam_Main
+    com o mesmo transform dela. A Webcam_Main precisa do filtro "Background Removal" (plugin
+    obs-backgroundremoval) para o quarto sumir e este fundo aparecer.
+    Centro de propósito vazio (é onde a pessoa fica); detalhes nas bordas, movimento bem lento.
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <style>
+    .glow {
+      position: absolute; left: 50%; top: 56%; width: 1500px; height: 1100px; margin: -550px 0 0 -750px;
+      background: radial-gradient(closest-side, rgba(250,43,40,.30), rgba(250,43,40,.10) 55%, transparent 100%);
+      animation: bg-breathe 9s ease-in-out infinite;
+    }
+    @keyframes bg-breathe { 0%, 100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+
+    .orbit-svg { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+    .orbit-svg ellipse { fill: none; stroke: var(--rk-orbit); stroke-width: 3; }
+    .orbit-a { animation: bg-drift 14s ease-in-out infinite; transform-origin: 960px 620px; }
+    @keyframes bg-drift { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(1.5deg) translateY(-8px); } }
+
+    /* Elipse vermelha grande desfocada no canto (eco do símbolo, sem o R) */
+    .blob {
+      position: absolute; right: -120px; top: -160px; width: 420px; height: 780px;
+      border-radius: 50%; background: var(--rk-red); opacity: .22; filter: blur(60px);
+    }
+    .blob.b2 { right: auto; left: -200px; top: auto; bottom: -260px; width: 380px; height: 700px; opacity: .14; }
+
+    .logo { position: absolute; right: 70px; top: 60px; width: 280px; }
+
+    .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 55%, transparent 45%, rgba(0,0,0,.55) 100%); }
+  </style>
+</head>
+<body>
+  <main class="rk-space">
+    <canvas class="rk-stars" data-seed="47"></canvas>
+    <div class="blob"></div>
+    <div class="blob b2"></div>
+    <div class="glow"></div>
+    <svg class="orbit-svg" viewBox="0 0 1920 1080">
+      <g class="orbit-a"><ellipse cx="960" cy="620" rx="1050" ry="230" transform="rotate(-8 960 620)"></ellipse></g>
+    </svg>
+    <span class="rk-spark" style="left:1580px; top:430px"></span>
+    <span class="rk-spark sm" style="left:300px; top:250px"></span>
+    <span class="rk-spark sm" style="left:1720px; top:840px; animation-delay:1.4s"></span>
+    <div class="vignette"></div>
+    <img class="logo" src="../../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+  </main>
+  <script src="../shared/rodikil.js"></script>
+</body>
+</html>

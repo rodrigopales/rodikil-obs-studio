@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Moldura do chat</title>
+  <!--
+    Browser Source 480x800 (ref.: identidade-visual/moldura-chat-480x800.png)
+    Área útil para o feed do chat (Overlay_ChatFeed): x=30 y=72, 420x656 em coordenadas do widget.
+    Na cena, posicione Overlay_ChatFeed em (chatX + 30*s, chatY + 72*s) com a mesma escala s,
+    e ACIMA da moldura na ordem.
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <style>
+    body { width: 480px; height: 800px; }
+    .ch-panel {
+      position: absolute;
+      left: 10px; top: 40px;
+      width: 460px; height: 750px;
+      border-radius: var(--rk-radius-md);
+      background: var(--rk-panel-glass);
+      border: 2px solid #353533;
+    }
+    .ch-pill { position: absolute; left: 34px; top: 14px; height: 52px; padding: 0 26px 0 18px; }
+    .ch-pill .rk-label { font-size: 30px; letter-spacing: 0.12em; }
+    .ch-handle { position: absolute; right: 36px; top: 32px; font-size: 15px; letter-spacing: 0.06em; }
+    .ch-foot { position: absolute; left: 40px; right: 40px; top: 740px; border-top: 1px solid #5A5A5C; padding-top: 16px; }
+    .ch-foot .rk-mono { font-size: 14px; letter-spacing: 0.12em; }
+  </style>
+</head>
+<body>
+  <div class="ch-panel"></div>
+  <span class="rk-pill is-red ch-pill"><i class="rk-dot"></i><span class="rk-label">CHAT</span></span>
+  <span class="rk-mono ch-handle">@RODIKIL</span>
+  <div class="ch-foot"><span class="rk-mono">MANDA UM SALVE NO CHAT //</span></div>
+</body>
+</html>

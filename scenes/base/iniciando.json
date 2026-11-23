@@ -1,0 +1,22 @@
+{
+  "scene": "Base - Iniciando",
+  "description": "Tela 'A live já vai começar' com música de fundo deep house sem direitos autorais (Overlay_Musica, -14 dB, loop). Sem Mic_Main: o microfone só fica aberto em Resenha e nas lives.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "items": [
+    {
+      "source": "Overlay_Iniciando",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5
+      }
+    },
+    {
+      "source": "Overlay_Musica"
+    }
+  ]
+}

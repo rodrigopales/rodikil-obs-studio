@@ -1,0 +1,123 @@
+{
+  "scene": "Base - Resenha",
+  "description": "Papo ao vivo: câmera grande com moldura à esquerda + chat à direita sobre o fundo espacial.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "$layout": {
+    "camera": "Overlay_CameraFrame escala 1.75 em (60, 105) → furo 1120x630 em (130, 280)",
+    "chat": "Overlay_Chat escala 1 em (1380, 140) → feed em (1410, 212)"
+  },
+  "items": [
+    {
+      "source": "Overlay_Resenha",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5
+      }
+    },
+    {
+      "source": "Overlay_WebcamBg",
+      "locked": true,
+      "transform": {
+        "positionX": 130,
+        "positionY": 280,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 1120,
+        "boundsHeight": 630,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      },
+      "enabled": false
+    },
+    {
+      "source": "Webcam_Main",
+      "locked": true,
+      "transform": {
+        "positionX": 130,
+        "positionY": 280,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 1120,
+        "boundsHeight": 630,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_WebcamClima",
+      "locked": true,
+      "transform": {
+        "positionX": 130,
+        "positionY": 280,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 1120,
+        "boundsHeight": 630,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_CameraFrame",
+      "locked": true,
+      "transform": {
+        "positionX": 60,
+        "positionY": 105,
+        "alignment": 5,
+        "scaleX": 1.75,
+        "scaleY": 1.75
+      }
+    },
+    {
+      "source": "Overlay_Chat",
+      "locked": true,
+      "transform": {
+        "positionX": 1380,
+        "positionY": 140,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
+      "source": "Overlay_ChatFeed",
+      "locked": true,
+      "transform": {
+        "positionX": 1410,
+        "positionY": 212,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
+      "source": "Overlay_LowerThird",
+      "enabled": false,
+      "transform": {
+        "positionX": 100,
+        "positionY": 760,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
+      "source": "Overlay_Alerts",
+      "transform": {
+        "positionX": 510,
+        "positionY": 40,
+        "alignment": 5,
+        "scaleX": 1,
+        "scaleY": 1
+      }
+    },
+    {
+      "source": "Mic_Main"
+    }
+  ]
+}

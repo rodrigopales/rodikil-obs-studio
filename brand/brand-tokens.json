@@ -1,0 +1,87 @@
+{
+  "$schema_version": "1.0",
+  "brand": "Rodikil",
+  "source": "identidade-visual/guia-de-identidade-rodikil.png (Guia de Uso V1)",
+  "handles": {
+    "youtube": "youtube.com/@rodikil",
+    "at": "@rodikil"
+  },
+
+  "colors": {
+    "primary": {
+      "vermelho-rodikil": { "hex": "#FA2B28", "rgb": [250, 43, 40], "use": "Destaque: elipse do logo, palavra-chave de títulos, pílulas AO VIVO, bordas de câmera. Nunca como fundo inteiro." },
+      "preto-glitter":    { "hex": "#0A0A0B", "rgb": [10, 10, 11],  "use": "Fundo principal (com textura de estrelas), painéis, 'R' do logo." }
+    },
+    "secondary": {
+      "osso":   { "hex": "#F4F1EA", "rgb": [244, 241, 234], "use": "Texto principal, wordmark 'odikil', brilhos." },
+      "poeira": { "hex": "#8C8C92", "rgb": [140, 140, 146], "use": "Texto secundário / mono, legendas, handles." }
+    },
+    "surfaces": {
+      "card":          { "hex": "#17171A", "use": "Cards do guia / superfícies elevadas sólidas." },
+      "panel":         { "rgba": "rgba(10, 10, 11, 0.92)", "use": "Faixa de nome, alertas, pílulas (amostrado: alpha 235/255)." },
+      "panel-glass":   { "rgba": "rgba(10, 10, 11, 0.72)", "use": "Painel do chat (amostrado: alpha 184/255)." },
+      "border":        { "hex": "#2C2C2C", "use": "Borda sutil de cards/painéis/pílulas." },
+      "divider":       { "hex": "#363535", "use": "Linhas divisórias internas (alertas, chat)." },
+      "orbit-line":    { "rgba": "rgba(250, 43, 40, 0.65)", "use": "Linha da órbita sobre o fundo estrelado." }
+    }
+  },
+
+  "typography": {
+    "logo": {
+      "family": "Rammetto One",
+      "fallback": "'Rammetto One', 'Arial Black', sans-serif",
+      "rule": "Só no logo/wordmark 'Rodikil'. Nunca em textos corridos.",
+      "google_fonts": "Rammetto+One"
+    },
+    "display": {
+      "family": "Barlow Condensed",
+      "fallback": "'Barlow Condensed', 'Arial Narrow', sans-serif",
+      "weights": [600, 700, 800],
+      "style": "CAIXA ALTA, títulos fortes, tracking leve (0.02em) em headlines e largo (0.12–0.18em) em rótulos",
+      "google_fonts": "Barlow+Condensed:wght@600;700;800"
+    },
+    "mono": {
+      "family": "Space Mono",
+      "fallback": "'Space Mono', 'Consolas', monospace",
+      "weights": [400, 700],
+      "style": "CAIXA ALTA, tracking largo (0.2–0.3em), separador '//' — detalhes, kicker, handles, subtítulos",
+      "google_fonts": "Space+Mono:wght@400;700"
+    }
+  },
+
+  "elements": {
+    "elipse":  { "desc": "Elipse vertical vermelha sólida (proporção ~1:1.85). Contém o 'R' preto do logo ou substitui um 'O' em headlines (ex.: 'JÁ V●LTO').", "color": "#FA2B28" },
+    "orbita":  { "desc": "Elipse horizontal muito achatada, só contorno vermelho fino (~2px), levemente inclinada (~-8°), atravessando a cena.", "stroke": "rgba(250, 43, 40, 0.65)" },
+    "brilho":  { "desc": "Estrela de 4 pontas cor Osso, usada pequena e esparsa.", "asset": "brand/assets/brilho.svg", "color": "#F4F1EA" },
+    "textura": { "desc": "Fundo Preto Glitter com campo de estrelas/grão fino (ruído branco de baixa opacidade)." }
+  },
+
+  "shape": {
+    "radius": { "sm": "8px", "md": "20px", "lg": "28px", "pill": "999px" },
+    "border-width": { "hairline": "1px", "frame-accent": "2px", "frame-inner": "10px" },
+    "shadow": { "frame": "0 18px 40px rgba(0, 0, 0, 0.55)" }
+  },
+
+  "overlay_style": {
+    "summary": "Espacial/minimalista: fundo preto estrelado, órbita vermelha fina, brilhos Osso esparsos, títulos Barlow Condensed em caixa alta com uma palavra em vermelho, detalhes Space Mono espaçados com '//', pílulas arredondadas.",
+    "pill": "Fundo panel, borda 1px border, ponto vermelho (ou preto sobre vermelho), texto Barlow Condensed 700 com tracking 0.12em.",
+    "camera_frame": "Contorno externo vermelho 2px + moldura interna preta 10px, raio 8px, sombra frame. Pílula 'RODIKIL // AO VIVO' acima, à esquerda.",
+    "footer": "Linha hairline no rodapé; '@RODIKIL' à esquerda (Osso) e 'YOUTUBE.COM/@RODIKIL' à direita (Poeira), Space Mono."
+  },
+
+  "rules": [
+    "O 'R' é SEMPRE preto dentro da elipse vermelha.",
+    "Não distorcer, girar ou mudar as cores do logo.",
+    "Vermelho só como destaque, nunca como fundo inteiro.",
+    "Rammetto One só no logo."
+  ],
+
+  "assets": {
+    "logo_dark_bg":  "brand/assets/logo-rodikil-fundo-escuro.png",
+    "logo_light_bg": "brand/assets/logo-rodikil-fundo-claro.png",
+    "symbol":        "brand/assets/simbolo-rodikil.png",
+    "watermark":     "brand/assets/marca-dagua-150x150.png",
+    "sparkle":       "brand/assets/brilho.svg",
+    "reference_dir": "identidade-visual/"
+  }
+}

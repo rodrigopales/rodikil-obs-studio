@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Intro 2 — Glitch</title>
+  <!--
+    INTRO 2 — GLITCH (energética, 6,5 s)
+    Sinal digital "conectando" com picotes -> BORA / PRO / GAME batendo no grave -> clarão + IMPACTO
+    -> logo limpo (sem efeito no logo) + pílula AO VIVO + jogos -> sai picotando para o preto.
+    Browser Source 1920x1080, "Arquivo local", marcar "Controlar áudio via OBS" e
+    "Reiniciar quando a cena ficar ativa".
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="intro.css">
+  <style>
+    .sky { position: absolute; inset: 0; opacity: .5; }
+
+    /* Linhas de varredura (CRT) */
+    .scan {
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 5px);
+      mix-blend-mode: multiply; opacity: .7;
+    }
+    /* Some no clarão: o logo entra limpo (regra da marca: não alterar o logo) */
+    .play .scan { animation: g-scan-off .1s 2.62s forwards; }
+    @keyframes g-scan-off { to { opacity: 0; } }
+
+    /* Barras de glitch (posicionadas pelo JS) */
+    .bar { position: absolute; display: none; }
+    .bar.red { background: var(--rk-red); }
+    .bar.bone { background: var(--rk-bone); }
+    .bar.dark { background: #17171A; }
+
+    .signal {
+      position: absolute; left: 0; right: 0; top: 500px; text-align: center;
+      font-size: 34px; color: var(--rk-bone); opacity: 0;
+    }
+    .signal .sep { color: var(--rk-red); }
+    .play .signal { animation: g-flicker 1.1s .05s steps(1) both; }
+    @keyframes g-flicker {
+      0% { opacity: 1; } 12% { opacity: 0; } 18% { opacity: 1; } 40% { opacity: .3; } 46% { opacity: 1; }
+      70% { opacity: 0; } 76% { opacity: 1; } 96% { opacity: 1; } 100% { opacity: 0; }
+    }
+
+    /* Palavras batendo (texto, não o logo — pode glitchar) */
+    .word {
+      position: absolute; left: 0; right: 0; top: 330px; text-align: center;
+      font-size: 380px; line-height: 1; opacity: 0;
+    }
+    .word.slam { animation: g-slam .36s cubic-bezier(.2,1.4,.4,1) both; }
+    @keyframes g-slam {
+      0% { opacity: 0; transform: scale(1.5); text-shadow: -26px 0 var(--rk-red), 26px 0 rgba(244,241,234,.6); }
+      25% { opacity: 1; transform: scale(.97) translateX(-10px); text-shadow: 14px 0 var(--rk-red), -14px 0 rgba(244,241,234,.5); }
+      45% { transform: scale(1) translateX(8px); text-shadow: -6px 0 var(--rk-red), 6px 0 rgba(244,241,234,.4); }
+      70%, 100% { opacity: 1; transform: none; text-shadow: none; }
+    }
+
+    .play .flash { animation: rk-flash .55s 2.6s ease-out both; }
+
+    /* Logo: entra limpo, sem distorção */
+    .logo { position: absolute; left: 460px; top: 230px; width: 1000px; height: 400px; }
+    .play .logo { animation: g-logo .5s 2.6s var(--rk-ease) both, g-out-flicker .5s 5.55s steps(1) forwards; }
+    @keyframes g-logo { 0% { opacity: 0; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes g-out-flicker { 0% { opacity: 1; } 20% { opacity: 0; } 35% { opacity: 1; } 60% { opacity: .2; } 75% { opacity: 1; } 100% { opacity: 0; } }
+
+    .pill-wrap { position: absolute; left: 0; right: 0; top: 660px; display: flex; justify-content: center; }
+    .pill-wrap .rk-pill { height: 62px; padding: 0 30px 0 24px; }
+    .pill-wrap .rk-label { font-size: 34px; }
+    .pill-wrap .rk-mono { font-size: 20px; color: var(--rk-bone); }
+    .play .pill-wrap { animation: g-pop .45s 3.3s cubic-bezier(.2,1.6,.4,1) both, g-out-flicker .5s 5.6s steps(1) forwards; }
+    @keyframes g-pop { 0% { opacity: 0; transform: scale(.6); } 100% { opacity: 1; transform: scale(1); } }
+
+    .games { position: absolute; left: 0; right: 0; top: 770px; text-align: center; font-size: 26px; color: var(--rk-dust); }
+    .games .sep { color: var(--rk-red); }
+    .play .games { animation: g-up .6s 3.7s var(--rk-ease) both, g-out-flicker .5s 5.6s steps(1) forwards; }
+    @keyframes g-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: none; } }
+
+    body { --out-at: 5.95s; --out-dur: .45s; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div class="rk-space">
+      <canvas class="rk-stars sky" data-seed="5"></canvas>
+      <p class="rk-mono signal anim">SINAL <span class="sep">//</span> CONECTANDO...</p>
+      <div class="rk-headline word" id="word"></div>
+      <img class="logo anim" src="../../brand/assets/logo-rodikil-fundo-escuro.png" alt="Rodikil">
+      <div class="pill-wrap anim">
+        <span class="rk-pill is-red dot-bone rk-live"><i class="rk-dot"></i><span class="rk-label">RODIKIL</span><span class="rk-mono">// AO VIVO</span></span>
+      </div>
+      <p class="rk-mono games anim">CS2 <span class="sep">//</span> DOTA 2 <span class="sep">//</span> GTA 6 <span class="sep">//</span> FULLACE</p>
+      <div id="bars"></div>
+      <div class="layer scan"></div>
+      <div class="layer flash"></div>
+      <div class="layer blackout"></div>
+    </div>
+  </div>
+
+  <script src="../shared/rodikil.js"></script>
+  <script src="sfx.js"></script>
+  <script src="intro.js"></script>
+  <script>
+    // Barras de glitch determinísticas (mesmo visual sempre)
+    const bars = document.getElementById("bars");
+    const kinds = ["red", "bone", "dark", "dark", "red", "dark", "bone", "dark"];
+    const els = kinds.map(function (k) { const d = document.createElement("div"); d.className = "bar " + k; bars.appendChild(d); return d; });
+    let seed = 7;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    function frame(intensity) {
+      seed = 7 + Math.floor(performance.now() / 40);
+      els.forEach(function (el) {
+        if (rnd() > intensity) { el.style.display = "none"; return; }
+        el.style.display = "block";
+        el.style.left = Math.floor(rnd() * 1700) + "px";
+        el.style.top = Math.floor(rnd() * 1060) + "px";
+        el.style.width = Math.floor(80 + rnd() * 700) + "px";
+        el.style.height = Math.floor(2 + rnd() * 26) + "px";
+      });
+    }
+    function clear() { els.forEach(function (el) { el.style.display = "none"; }); }
+    function burst(from, to, intensity) {
+      const out = [];
+      for (let t = from; t < to; t += 0.045) out.push([t, frame.bind(null, intensity)]);
+      out.push([to, clear]);
+      return out;
+    }
+
+    const word = document.getElementById("word");
+    function slam(html) {
+      return function () { word.classList.remove("slam"); void word.offsetWidth; word.innerHTML = html; word.classList.add("slam"); };
+    }
+    function hideWord() { word.classList.remove("slam"); word.innerHTML = ""; }
+
+    const steps = [[0, hideWord], [0, clear]]
+      .concat(burst(0, 1.1, 0.55))
+      .concat([
+        [1.2, slam("BORA")], [1.55, slam("PRO")], [1.9, slam('<span class="rk-accent">GAME</span>')],
+        [2.6, hideWord]
+      ])
+      .concat(burst(1.2, 1.32, 0.8), burst(1.55, 1.67, 0.8), burst(1.9, 2.02, 0.8))
+      .concat(burst(2.35, 2.6, 0.9))
+      .concat(burst(5.5, 6.0, 0.95));
+
+    RKIntro.run({
+      duration: 6.5,
+      steps: steps,
+      sound: function (s, t) {
+        s.glitch(t, 1.1, 0.14);
+        s.blip(t + 0.15, 880, 0.05, 0.08, "sine");
+        s.blip(t + 0.55, 660, 0.05, 0.08, "sine");
+        [1.2, 1.55, 1.9].forEach(function (x, i) {
+          s.kick(t + x, 0.95);
+          s.glitch(t + x, 0.12, 0.12);
+          s.blip(t + x, 220 + i * 110, 0.08, 0.2, "sawtooth");
+        });
+        s.riser(t + 1.95, 0.65, 0.2);
+        s.glitch(t + 2.35, 0.25, 0.16);
+        s.impact(t + 2.6, 1);
+        s.shimmer(t + 2.85, 0.08);
+        s.blip(t + 3.3, 880, 0.08, 0.06, "sine");
+        s.blip(t + 3.38, 1320, 0.08, 0.1, "sine");
+        s.whoosh(t + 3.6, 0.6, 600, 3000, 0.2, 0.2, 0, 0);
+        s.glitch(t + 5.5, 0.5, 0.18);
+        s.whoosh(t + 5.6, 0.8, 3000, 150, 0.3, 0.4, 0.6, -0.6);
+      }
+    });
+  </script>
+</body>
+</html>

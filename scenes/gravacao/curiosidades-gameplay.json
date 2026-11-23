@@ -1,0 +1,94 @@
+{
+  "scene": "Gravação - Curiosidades Gameplay",
+  "description": "Gravação limpa para edição: gameplay em tela cheia + câmera simples no canto (sem moldura, chat ou alertas). Display_Capture e logo existem mas ficam desligados para uso pontual.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "items": [
+    {
+      "source": "Game_Capture",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_INNER",
+        "boundsWidth": 1920,
+        "boundsHeight": 1080,
+        "boundsAlignment": 0
+      }
+    },
+    {
+      "source": "Display_Capture",
+      "enabled": false,
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_INNER",
+        "boundsWidth": 1920,
+        "boundsHeight": 1080,
+        "boundsAlignment": 0
+      }
+    },
+    {
+      "source": "Overlay_WebcamBg",
+      "locked": true,
+      "transform": {
+        "positionX": 24,
+        "positionY": 786,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 480,
+        "boundsHeight": 270,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      },
+      "enabled": false
+    },
+    {
+      "source": "Webcam_Main",
+      "locked": true,
+      "transform": {
+        "positionX": 24,
+        "positionY": 786,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 480,
+        "boundsHeight": 270,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_WebcamClima",
+      "locked": true,
+      "transform": {
+        "positionX": 24,
+        "positionY": 786,
+        "alignment": 5,
+        "boundsType": "OBS_BOUNDS_SCALE_OUTER",
+        "boundsWidth": 480,
+        "boundsHeight": 270,
+        "boundsAlignment": 0,
+        "cropToBounds": true
+      }
+    },
+    {
+      "source": "Overlay_Logo",
+      "enabled": false,
+      "transform": {
+        "positionX": 1744,
+        "positionY": 22,
+        "alignment": 5,
+        "scaleX": 0.0846,
+        "scaleY": 0.0846
+      }
+    },
+    {
+      "source": "Mic_Main"
+    }
+  ]
+}

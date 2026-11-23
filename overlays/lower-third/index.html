@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Rodikil // Faixa de nome</title>
+  <!--
+    Browser Source 1100x200 (ref.: identidade-visual/faixa-de-nome-1100x200.png)
+    Query string:
+      ?title=Convidado   — sem title usa o wordmark "Rodikil" (Rammetto One)
+      &sub=@convidado    — padrão YOUTUBE.COM/@RODIKIL
+      &live=0            — esconde a pílula AO VIVO (padrão 1)
+      &hold=0            — segundos visível antes de sair (0 = fica fixo)
+  -->
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="lt" id="lt">
+    <div class="lt-bar rk-panel"></div>
+    <div class="rk-ellipse lt-symbol"><img src="../../brand/assets/simbolo-rodikil.png" alt=""></div>
+    <div class="lt-text">
+      <div class="lt-title" id="title"></div>
+      <div class="lt-sub"><i class="lt-dash"></i><span class="rk-mono" id="sub"></span></div>
+    </div>
+    <span class="rk-pill is-red dot-bone rk-live lt-live" id="live"><i class="rk-dot"></i><span class="rk-label">AO VIVO</span></span>
+  </div>
+  <script src="../shared/rodikil.js"></script>
+  <script>
+    (function () {
+      const title = Rodikil.param("title", "");
+      const t = document.getElementById("title");
+      if (title) { t.textContent = title.toUpperCase(); t.className = "lt-title rk-headline"; }
+      else { t.textContent = "Rodikil"; t.className = "lt-title rk-wordmark"; }
+      document.getElementById("sub").textContent = Rodikil.param("sub", "YOUTUBE.COM/@RODIKIL").toUpperCase();
+      if (Rodikil.param("live", "1") === "0") document.getElementById("live").remove();
+      const hold = parseFloat(Rodikil.param("hold", "0"));
+      if (hold > 0) setTimeout(function () { document.getElementById("lt").classList.add("is-out"); }, hold * 1000);
+    })();
+  </script>
+</body>
+</html>

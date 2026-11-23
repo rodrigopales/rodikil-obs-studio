@@ -1,0 +1,183 @@
+/* ==========================================================================
+   RODIKIL // THEME BASE
+   Fonte única de estilo para todos os Browser Sources do OBS.
+   Tokens espelham brand/brand-tokens.json — altere os dois juntos.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Rammetto+One&family=Space+Mono:wght@400;700&display=block");
+
+:root {
+  /* Cores primárias */
+  --rk-red: #FA2B28;          /* Vermelho Rodikil — só destaque */
+  --rk-black: #0A0A0B;        /* Preto Glitter */
+  /* Cores secundárias */
+  --rk-bone: #F4F1EA;         /* Osso */
+  --rk-dust: #8C8C92;         /* Poeira */
+  /* Superfícies */
+  --rk-card: #17171A;
+  --rk-panel: rgba(10, 10, 11, 0.92);
+  --rk-panel-glass: rgba(10, 10, 11, 0.72);
+  --rk-border: #2C2C2C;
+  --rk-divider: #363535;
+  --rk-orbit: rgba(250, 43, 40, 0.65);
+
+  /* Tipografia */
+  --rk-font-logo: "Rammetto One", "Arial Black", sans-serif;
+  --rk-font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --rk-font-mono: "Space Mono", "Consolas", monospace;
+
+  /* Forma */
+  --rk-radius-sm: 8px;
+  --rk-radius-md: 20px;
+  --rk-radius-lg: 28px;
+  --rk-radius-pill: 999px;
+  --rk-shadow-frame: 0 18px 40px rgba(0, 0, 0, 0.55);
+
+  /* Movimento */
+  --rk-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------- Reset para Browser Source (fundo transparente) ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  color: var(--rk-bone);
+  font-family: var(--rk-font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Fundo espacial (telas cheias) ---------- */
+.rk-space {
+  position: absolute;
+  inset: 0;
+  background: var(--rk-black);
+  overflow: hidden;
+}
+.rk-space canvas.rk-stars { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Grão fino (textura) */
+.rk-space::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Órbita ---------- */
+.rk-orbit {
+  position: absolute;
+  border: 2px solid var(--rk-orbit);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ---------- Brilho (estrela de 4 pontas) ---------- */
+.rk-spark {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: var(--rk-bone);
+  clip-path: path("M14 0 C15 9 19 13 28 14 C19 15 15 19 14 28 C13 19 9 15 0 14 C9 13 13 9 14 0 Z");
+  animation: rk-twinkle 3.2s ease-in-out infinite;
+}
+.rk-spark.sm { transform: scale(0.55); }
+@keyframes rk-twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ---------- Elipse com R (símbolo) ---------- */
+.rk-ellipse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rk-red);
+  border-radius: 50%;
+  aspect-ratio: 1 / 1.85;
+}
+.rk-ellipse img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ---------- Tipografia ---------- */
+.rk-wordmark { font-family: var(--rk-font-logo); color: var(--rk-bone); letter-spacing: 0; }
+.rk-headline {
+  font-family: var(--rk-font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.9;
+  color: var(--rk-bone);
+  margin: 0;
+}
+.rk-label {
+  font-family: var(--rk-font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.rk-mono {
+  font-family: var(--rk-font-mono);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--rk-dust);
+}
+.rk-accent { color: var(--rk-red); }
+
+/* ---------- Pílula ---------- */
+.rk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 22px 0 18px;
+  height: 46px;
+  border-radius: var(--rk-radius-pill);
+  background: var(--rk-panel);
+  border: 1px solid var(--rk-border);
+}
+.rk-pill .rk-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--rk-red);
+  flex: none;
+}
+.rk-pill.is-red { background: var(--rk-red); border-color: var(--rk-red); color: var(--rk-bone); }
+.rk-pill.is-red .rk-dot { background: var(--rk-black); }
+.rk-pill.is-red.dot-bone .rk-dot { background: var(--rk-bone); }
+.rk-pill.is-outline-red { background: transparent; border: 2px solid var(--rk-red); }
+.rk-pill.is-outline { background: transparent; border: 2px solid #3A3A3C; }
+.rk-pill .rk-label { font-size: 26px; color: var(--rk-bone); }
+.rk-pill .rk-mono { font-size: 16px; letter-spacing: 0.12em; }
+
+/* ---------- Painéis ---------- */
+.rk-panel {
+  background: var(--rk-panel);
+  border: 1px solid var(--rk-border);
+}
+.rk-divider { height: 2px; background: var(--rk-divider); border: 0; }
+
+/* ---------- Pulsar (indicador ao vivo) ---------- */
+.rk-live .rk-dot { animation: rk-pulse 1.6s ease-in-out infinite; }
+@keyframes rk-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ---------- Entradas ---------- */
+@keyframes rk-in-left {
+  from { opacity: 0; transform: translateX(-60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes rk-out-left {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-60px); }
+}
+@keyframes rk-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

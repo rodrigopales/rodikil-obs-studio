@@ -1,0 +1,19 @@
+{
+  "scene": "Base - Encerrando",
+  "description": "Tela 'Valeu, galera!' com CTAs. Sem Mic_Main: o microfone só fica aberto em Resenha e nas lives.",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "items": [
+    {
+      "source": "Overlay_Encerrando",
+      "locked": true,
+      "transform": {
+        "positionX": 0,
+        "positionY": 0,
+        "alignment": 5
+      }
+    }
+  ]
+}
