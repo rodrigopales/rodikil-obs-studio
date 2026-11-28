@@ -105,6 +105,27 @@ local function toggle_mic()
   obs.obs_source_release(src)
 end
 
+-- Clipe dos últimos segundos (Replay Buffer do OBS). Se o buffer estiver desligado, liga — o próximo
+-- clipe fica disponível depois de alguns segundos. O assistente (scripts/assistente_live.py) gera a versão vertical.
+local function salvar_clipe()
+  if obs.obs_frontend_replay_buffer_active() then
+    obs.obs_frontend_replay_buffer_save()
+    obs.script_log(obs.LOG_INFO, "Clipe salvo (Replay Buffer)")
+  else
+    obs.obs_frontend_replay_buffer_start()
+    obs.script_log(obs.LOG_WARNING, "Replay Buffer estava desligado — liguei; aperte de novo daqui a pouco")
+  end
+end
+
+-- Liga o Replay Buffer sozinho quando a live começa (e desliga quando ela termina)
+local function on_frontend_event(event)
+  if event == obs.OBS_FRONTEND_EVENT_STREAMING_STARTED then
+    if not obs.obs_frontend_replay_buffer_active() then obs.obs_frontend_replay_buffer_start() end
+  elseif event == obs.OBS_FRONTEND_EVENT_STREAMING_STOPPED then
+    if obs.obs_frontend_replay_buffer_active() then obs.obs_frontend_replay_buffer_stop() end
+  end
+end
+
 local function register(settings, id, label, action)
   local hk = obs.obs_hotkey_register_frontend(id, label, function(pressed)
     if pressed then action() end
@@ -117,7 +138,7 @@ end
 
 function script_description()
   return "<b>Rodikil — Intro e atalhos</b><br>Abrir live (intro → próxima cena), ir para cada cena direto no ar " ..
-         "e liga/desliga do microfone. Funciona com o Modo Estúdio e com o jogo em foco.<br>" ..
+         "liga/desliga do microfone e clipe dos últimos segundos. Funciona com o Modo Estúdio e com o jogo em foco.<br>" ..
          "Teclas em Configurações › Teclas de atalho (busque <i>Rodikil</i>)."
 end
 
@@ -157,6 +178,8 @@ function script_load(settings)
     local tipo = r.tipo
     register(settings, r.id, "Rodikil: reação " .. r.label, function() reacao(tipo) end)
   end
+  register(settings, "rodikil_clipe", "Rodikil: salvar clipe (últimos segundos)", salvar_clipe)
+  obs.obs_frontend_add_event_callback(on_frontend_event)
 end
 
 function script_save(settings)

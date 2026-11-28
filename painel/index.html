@@ -79,6 +79,9 @@
     .ctl.muted i { background: var(--rk-red); }
     .ctl.absent { opacity: .45; }
     .ctl.stream.live { background: transparent; border-color: var(--rk-red); color: var(--rk-red); }
+    .ctl.clip { grid-column: 1 / -1; }
+    .ctl.clip.off { opacity: .6; }
+    .ctl.clip.saved { border-color: var(--rk-red); }
     .ctl.confirm { background: var(--rk-red); border-color: var(--rk-red); color: var(--rk-bone); }
 
     .reacts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -142,6 +145,7 @@
     <div class="controls">
       <button class="ctl" id="btn-mic"><span class="ctl-main"><i></i><span id="mic-txt">MIC</span></span><em class="hk">CTRL+ALT+M</em></button>
       <button class="ctl stream" id="btn-stream"><span id="stream-txt">INICIAR LIVE</span></button>
+      <button class="ctl clip" id="btn-clip"><span class="ctl-main">✂ <span id="clip-txt">CLIPE DOS ÚLTIMOS 40 S</span></span><em class="hk" id="clip-sub">CTRL+ALT+C</em></button>
     </div>
 
     <h2>Reações <span class="sep">//</span> com som</h2>
@@ -381,6 +385,11 @@
         $("s-drop-box").classList.toggle("bad", lost > 0);
       }
       $("s-cpu").textContent = Math.round(stats.cpuUsage) + "%";
+      try {
+        const rb = (await call("GetReplayBufferStatus")).outputActive;
+        $("btn-clip").classList.toggle("off", !rb);
+        $("clip-sub").textContent = "CTRL+ALT+C · GRAVADOR " + (rb ? "LIGADO" : "DESLIGADO");
+      } catch (e) {}
       if (!confirmStream) renderStream();
     } catch (e) {}
   }
@@ -418,6 +427,17 @@
   $("btn-open").onclick = openLive;
   $("btn-mic").onclick = () => call("ToggleInputMute", { inputName: MIC }).catch(() => toast("Mic_Main não encontrado"));
   $("btn-stream").onclick = toggleStream;
+  $("btn-clip").onclick = async () => {
+    const b = $("btn-clip");
+    try {
+      await call("SaveReplayBuffer");
+      b.classList.add("saved"); $("clip-txt").textContent = "CLIPE SALVO!";
+      setTimeout(() => { b.classList.remove("saved"); $("clip-txt").textContent = "CLIPE DOS ÚLTIMOS 40 S"; }, 2500);
+    } catch (e) {
+      try { await call("StartReplayBuffer"); toast("Gravador de clipes ligado — aperte de novo daqui a alguns segundos."); }
+      catch (x) { toast("Não consegui salvar o clipe: " + e.message); }
+    }
+  };
   document.addEventListener("keydown", (e) => {
     if (e.target.tagName === "INPUT") return;
     const s = SCENES.find((x) => x.key === e.key); if (s) return goScene(s.name);

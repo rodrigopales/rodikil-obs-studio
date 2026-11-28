@@ -1,13 +1,13 @@
 {
   "scene": "Live - Dota 2",
-  "description": "Live de Dota 2: câmera ~20% da largura no canto INFERIOR ESQUERDO, logo ACIMA do minimapa (sem cobri-lo); alertas acima da câmera; cartão do Pix no canto superior esquerdo. Nada sobre minimapa, top bar, HUD do herói e loja. Sem chat na tela. Mic_Main e Desktop_Audio são fontes da cena.",
+  "description": "Live de Dota 2: câmera ~20% da largura no canto INFERIOR ESQUERDO, encostada na borda (sobre a área do minimapa, a pedido); alertas acima da câmera; cartão do Pix no canto superior esquerdo. Sem chat na tela. Mic_Main e Desktop_Audio são fontes da cena.",
   "canvas": [
     1920,
     1080
   ],
   "$layout": {
-    "camera": "Overlay_CameraFrame escala 0.6 em (4, 519) → furo 384x216 em (28, 579), termina em y=795 (minimapa começa ~y=810)",
-    "alerts": "Overlay_Alerts escala 0.6 em (12, 360)",
+    "camera": "Overlay_CameraFrame escala 0.6 em (-2, 794) → furo 384x216 em (22, 854) — igual à live de 22/11/2026",
+    "alerts": "Overlay_Alerts escala 0.6 em (12, 628)",
     "pix": "Overlay_PixCardJogo escala 0.72 em (12, 28)"
   },
   "items": [
@@ -28,8 +28,8 @@
       "source": "Overlay_WebcamBg",
       "locked": true,
       "transform": {
-        "positionX": 28.0,
-        "positionY": 579.0,
+        "positionX": 22.0,
+        "positionY": 854.0,
         "alignment": 5,
         "boundsType": "OBS_BOUNDS_SCALE_OUTER",
         "boundsWidth": 384,
@@ -43,8 +43,8 @@
       "source": "Webcam_Main",
       "locked": true,
       "transform": {
-        "positionX": 28.0,
-        "positionY": 579.0,
+        "positionX": 22.0,
+        "positionY": 854.0,
         "alignment": 5,
         "boundsType": "OBS_BOUNDS_SCALE_OUTER",
         "boundsWidth": 384,
@@ -57,8 +57,8 @@
       "source": "Overlay_WebcamClima",
       "locked": true,
       "transform": {
-        "positionX": 28.0,
-        "positionY": 579.0,
+        "positionX": 22.0,
+        "positionY": 854.0,
         "alignment": 5,
         "boundsType": "OBS_BOUNDS_SCALE_OUTER",
         "boundsWidth": 384,
@@ -71,8 +71,8 @@
       "source": "Overlay_CameraFrame",
       "locked": true,
       "transform": {
-        "positionX": 4,
-        "positionY": 519,
+        "positionX": -2,
+        "positionY": 794,
         "alignment": 5,
         "scaleX": 0.6,
         "scaleY": 0.6
@@ -94,7 +94,7 @@
       "enabled": false,
       "transform": {
         "positionX": 12,
-        "positionY": 360,
+        "positionY": 628,
         "alignment": 5,
         "scaleX": 0.6,
         "scaleY": 0.6
@@ -104,7 +104,7 @@
       "source": "Overlay_Alerts",
       "transform": {
         "positionX": 12,
-        "positionY": 360,
+        "positionY": 628,
         "alignment": 5,
         "scaleX": 0.6,
         "scaleY": 0.6

@@ -75,6 +75,7 @@ Estúdio (os atalhos nativos de cena do OBS só mudam a Prévia). Com o OBS **fe
 | `Ctrl+Alt+0` ou `Ctrl+Alt+I` | Abrir live (intro → Resenha) |
 | `Ctrl+Alt+M` | Microfone liga/desliga |
 | `Ctrl+Alt+F1` … `F6` | Reações: GG, CLUTCH, F, PATETA, HYPE, TILTOU |
+| `Ctrl+Alt+C` | Salvar clipe dos últimos 40 s |
 
 ### Reações com som
 `overlays/reacoes/index.html` (fonte `Overlay_Reacoes`, no topo das cenas de live). Dispare pelos atalhos acima
@@ -86,6 +87,14 @@ No painel do LivePix copie os links dos widgets de **alerta** e de **QR Code** e
 O alerta aparece nas cenas de live e na Resenha. O QR Code entra num cartão Rodikil "MANDA UM PIX //"
 (`overlays/livepix/qr-card.html`): fixo no Iniciando e no Intervalo (`Overlay_PixCard`) e, nas cenas de jogo,
 aparecendo a cada 10 min por 25 s (`Overlay_PixCardJogo` — ajuste `a`, `d`, `p` na URL em `scenes/sources.json`).
+
+### Assistente da live (chat sempre pronto + clipes)
+Dê dois cliques em `iniciar-assistente.cmd` (ou coloque um atalho dele em `shell:startup` para ligar com o Windows).
+- **Chat:** a cada minuto acha a live atual de `@RODIKIL` e aponta o chat da Resenha para ela — nada de copiar link.
+- **Clipe:** `Ctrl+Alt+C` ou o botão **✂ CLIPE** do Painel salva os últimos **40 s** (Replay Buffer, liga sozinho quando a
+  live começa). O arquivo vai para `<pasta de gravação>/Clipes Rodikil/` e, com o **ffmpeg** instalado
+  (`winget install Gyan.FFmpeg`), sai também a versão **vertical 1080x1920** para Shorts (webcam em cima, jogo embaixo).
+- Log em `logs/assistente.log`.
 
 ## Dia a dia
 

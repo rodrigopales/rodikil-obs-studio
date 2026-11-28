@@ -35,6 +35,8 @@ scripts/painel_servidor.py  Serve SÓ painel/, overlays/shared/, brand/assets/ n
                        checada no caminho FINAL (translate_path) — checar a URL crua vazava o .env via %2e%2e.
                        Intro em uso: overlays/intro/opcao-1-orbita.html (Overlay_Intro, cena Base - Intro)
 scripts/
+  assistente_live.py   Segundo plano: chat da Resenha segue a live atual (@RODIKIL/live, só troca a URL do
+                       Overlay_ChatFeed) + clipes do Replay Buffer → "Clipes Rodikil/" e vertical 1080x1920 via ffmpeg
   setup_machine.ps1    Máquina nova: venv, .env, plugin (versão fixa + SHA-256), perfil — idempotente
   setup_obs_profile.py Mescla obs-config/profile/ no perfil do OBS (OBS fechado; nunca toca service.json)
   obs_common.py        Conexão (.env), placeholders, normalização de transform
